@@ -1,20 +1,30 @@
 import { Link, useLocation } from "react-router-dom";
 import { BookOpen, Menu, X, User } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { useAuthModal } from "@/context/AuthModalContext";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const { openModal } = useAuthModal();
 
-  const token = localStorage.getItem("token");
-  let userName = "";
-  try {
-    const stored = localStorage.getItem("user");
-    if (stored) userName = JSON.parse(stored).name || "";
-  } catch { /* ignore */ }
+  const [authState, setAuthState] = useState({
+    token: localStorage.getItem("token"),
+    userName: (() => { try { return JSON.parse(localStorage.getItem("user") || "{}").name || ""; } catch { return ""; } })()
+  });
 
-  const isLoggedIn = !!token;
+  useEffect(() => {
+    const sync = () => setAuthState({
+      token: localStorage.getItem("token"),
+      userName: (() => { try { return JSON.parse(localStorage.getItem("user") || "{}").name || ""; } catch { return ""; } })()
+    });
+    window.addEventListener("storage", sync);
+    return () => window.removeEventListener("storage", sync);
+  }, []);
+
+  const isLoggedIn = !!authState.token;
+  const userName = authState.userName;
 
   const links = [
     { to: "/", label: "Home" },
@@ -60,12 +70,13 @@ const Navbar = () => {
             </Link>
           ) : (
             <>
-              <Link to="/login">
-                <Button variant="ghost" size="sm">Log in</Button>
-              </Link>
-              <Link to="/register">
-                <Button size="sm">Get Started</Button>
-              </Link>
+              <Button variant="ghost" size="sm" onClick={() => openModal("login")}>
+                Log in
+              </Button>
+              <Button size="sm" onClick={() => openModal("register")}
+                className="rounded-full px-5 shadow-sm">
+                Get Started
+              </Button>
             </>
           )}
         </div>
@@ -94,8 +105,14 @@ const Navbar = () => {
               </Link>
             ) : (
               <>
-                <Link to="/login" className="flex-1"><Button variant="outline" className="w-full" size="sm">Log in</Button></Link>
-                <Link to="/register" className="flex-1"><Button className="w-full" size="sm">Get Started</Button></Link>
+                <Button variant="outline" className="flex-1" size="sm"
+                  onClick={() => { setMobileOpen(false); openModal("login"); }}>
+                  Log in
+                </Button>
+                <Button className="flex-1" size="sm"
+                  onClick={() => { setMobileOpen(false); openModal("register"); }}>
+                  Sign Up
+                </Button>
               </>
             )}
           </div>
