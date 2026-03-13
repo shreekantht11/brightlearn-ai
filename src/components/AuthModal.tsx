@@ -188,11 +188,12 @@ const AuthModal = () => {
           <div className="fixed inset-0 z-[201] flex items-center justify-center p-4 pointer-events-none">
             <motion.div
               key="dialog"
+              layout
               initial={{ opacity: 0, y: 32, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 24, scale: 0.97 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="pointer-events-auto w-full max-w-[440px] bg-white rounded-3xl shadow-2xl overflow-hidden"
+              className="pointer-events-auto w-full max-w-[520px] bg-white rounded-3xl shadow-2xl overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -239,7 +240,7 @@ const AuthModal = () => {
               </div>
 
               {/* Body */}
-              <div className="px-8 py-6">
+              <div className="px-8 py-6 min-h-[420px] flex flex-col justify-between">
                 {/* Heading */}
                 <AnimatePresence mode="wait">
                   <motion.div
