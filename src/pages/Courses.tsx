@@ -12,9 +12,11 @@ const Courses = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
 
-  const filtered = courses.filter((c) =>
-    c.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = courses.filter((c) => {
+    const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = category === "All" || c.category === category;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="min-h-screen bg-background">
