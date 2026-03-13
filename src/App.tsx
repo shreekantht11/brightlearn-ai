@@ -14,12 +14,15 @@ import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
+import BackButton from "./components/BackButton";
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <BackButton />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
