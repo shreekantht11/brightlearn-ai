@@ -55,3 +55,24 @@ export const getSubjectTree = async (req: Request, res: Response, next: NextFunc
     next(error);
   }
 };
+
+export const enrollToSubject = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { subjectId } = req.params;
+    const userId = req.user?.id;
+
+    // Check if subject exists
+    const [subjects]: any = await pool.query('SELECT id FROM subjects WHERE id = ?', [subjectId]);
+    if (subjects.length === 0) return res.status(404).json({ message: 'Subject not found' });
+
+    // Insert enrollment (ignore if already exists due to UNIQUE constraint)
+    await pool.query(
+      'INSERT IGNORE INTO enrollments (user_id, subject_id) VALUES (?, ?)',
+      [userId, subjectId]
+    );
+
+    res.json({ message: 'Successfully enrolled in course' });
+  } catch (error) {
+    next(error);
+  }
+};

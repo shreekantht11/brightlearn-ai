@@ -7,10 +7,19 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
 
+  const token = localStorage.getItem("token");
+  let userName = "";
+  try {
+    const stored = localStorage.getItem("user");
+    if (stored) userName = JSON.parse(stored).name || "";
+  } catch { /* ignore */ }
+
+  const isLoggedIn = !!token;
+
   const links = [
     { to: "/", label: "Home" },
     { to: "/courses", label: "Courses" },
-    { to: "/profile", label: "Profile" },
+    ...(isLoggedIn ? [{ to: "/profile", label: "Profile" }] : []),
   ];
 
   return (
@@ -20,7 +29,7 @@ const Navbar = () => {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
             <BookOpen className="h-5 w-5 text-primary-foreground" />
           </div>
-          LearnAI
+          BrightLearn
         </Link>
 
         <div className="hidden md:flex items-center gap-1">
@@ -40,12 +49,25 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <Link to="/login">
-            <Button variant="ghost" size="sm">Log in</Button>
-          </Link>
-          <Link to="/register">
-            <Button size="sm">Get Started</Button>
-          </Link>
+          {isLoggedIn ? (
+            <Link to="/profile" className="flex items-center gap-2.5 bg-accent hover:bg-accent/80 rounded-full pl-2 pr-4 py-1.5 transition-colors">
+              <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-primary-foreground shrink-0">
+                {userName ? userName[0].toUpperCase() : <User className="h-4 w-4" />}
+              </div>
+              <span className="text-sm font-semibold text-foreground truncate max-w-[100px]">
+                {userName || "Profile"}
+              </span>
+            </Link>
+          ) : (
+            <>
+              <Link to="/login">
+                <Button variant="ghost" size="sm">Log in</Button>
+              </Link>
+              <Link to="/register">
+                <Button size="sm">Get Started</Button>
+              </Link>
+            </>
+          )}
         </div>
 
         <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
@@ -66,8 +88,16 @@ const Navbar = () => {
             </Link>
           ))}
           <div className="flex gap-2 pt-2">
-            <Link to="/login" className="flex-1"><Button variant="outline" className="w-full" size="sm">Log in</Button></Link>
-            <Link to="/register" className="flex-1"><Button className="w-full" size="sm">Get Started</Button></Link>
+            {isLoggedIn ? (
+              <Link to="/profile" className="flex-1">
+                <Button className="w-full" size="sm">My Profile</Button>
+              </Link>
+            ) : (
+              <>
+                <Link to="/login" className="flex-1"><Button variant="outline" className="w-full" size="sm">Log in</Button></Link>
+                <Link to="/register" className="flex-1"><Button className="w-full" size="sm">Get Started</Button></Link>
+              </>
+            )}
           </div>
         </div>
       )}

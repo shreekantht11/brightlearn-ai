@@ -1,13 +1,16 @@
 import { Router } from 'express';
-import { getSubjects, getSubjectById, getSubjectTree } from './subject.controller';
+import { getSubjects, getSubjectById, getSubjectTree, enrollToSubject } from './subject.controller';
 import { requireAuth } from '../../middleware/authMiddleware';
 
 const router = Router();
 
-router.use(requireAuth);
-
+// Public routes – no auth needed to browse
 router.get('/', getSubjects);
 router.get('/:subjectId', getSubjectById);
-router.get('/:subjectId/tree', getSubjectTree);
+
+// Protected routes – must be logged in
+router.get('/:subjectId/tree', requireAuth, getSubjectTree);
+router.post('/:subjectId/enroll', requireAuth, enrollToSubject);
 
 export default router;
+

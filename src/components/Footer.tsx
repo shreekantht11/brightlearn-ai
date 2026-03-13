@@ -9,9 +9,9 @@ const Footer = () => (
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
             <BookOpen className="h-4 w-4 text-primary-foreground" />
           </div>
-          LearnAI
+          BrightLearn
         </Link>
-        <p className="text-sm text-muted-foreground">AI-powered learning for the modern era.</p>
+        <p className="text-sm text-muted-foreground">Your smartest path to mastery — AI-powered learning for the modern era.</p>
       </div>
       {[
         { title: "Platform", links: ["Courses", "AI Tutor", "Pricing"] },
@@ -29,7 +29,7 @@ const Footer = () => (
       ))}
     </div>
     <div className="container mt-8 pt-8 border-t border-border">
-      <p className="text-xs text-muted-foreground text-center">© 2026 LearnAI. All rights reserved.</p>
+      <p className="text-xs text-muted-foreground text-center">© 2026 BrightLearn. All rights reserved.</p>
     </div>
   </footer>
 );

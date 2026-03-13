@@ -1,18 +1,67 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CourseCard from "@/components/CourseCard";
-import { courses } from "@/lib/data";
+import { courses as mockCourses } from "@/lib/data";
 
 const categories = ["All", "Programming", "Data Science", "Design", "Cloud"];
+
+// Normalise mock courses to match the shape we use in rendering
+const normalisedMock = mockCourses.map((c) => ({
+  id: c.id,
+  title: c.title,
+  instructor: c.instructor,
+  thumbnail: c.thumbnail,
+  duration: c.duration,
+  lessons: c.lessons,
+  category: c.category,
+  isLive: false,
+}));
 
 const Courses = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
+  // Pre-load mock data so courses are visible immediately — API replaces with live data if available
+  const [coursesData, setCoursesData] = useState<any[]>(normalisedMock);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = courses.filter((c) => {
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("http://localhost:5000/api/subjects", {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.length > 0) {
+            // Backend has real subjects — swap in live data
+            setCoursesData(data.map((s: any) => ({
+              id: s.id.toString(),
+              title: s.title,
+              instructor: "BrightLearn Platform",
+              thumbnail: `https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&h=340&fit=crop`,
+              duration: "2+ hours",
+              lessons: 5,
+              category: "All",
+              isLive: true,
+            })));
+          }
+          // If API returns empty, the existing mock data stays visible
+        }
+        // On network error, mock data stays visible silently
+      } catch {
+        // keep mock data
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
+
+  const filtered = coursesData.filter((c) => {
     const matchesSearch = c.title.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = category === "All" || c.category === category;
     return matchesSearch && matchesCategory;
@@ -54,13 +103,27 @@ const Courses = () => {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((c) => (
-            <CourseCard key={c.id} {...c} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map((c) => (
+              <CourseCard
+                key={c.id}
+                id={c.id.toString()}
+                title={c.title}
+                instructor={c.instructor}
+                thumbnail={c.thumbnail}
+                duration={c.duration}
+                lessons={c.lessons}
+              />
+            ))}
+          </div>
+        )}
 
-        {filtered.length === 0 && (
+        {!loading && filtered.length === 0 && (
           <div className="text-center py-20 text-muted-foreground">
             No courses found matching your search.
           </div>
