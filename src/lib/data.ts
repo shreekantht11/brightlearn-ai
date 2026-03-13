@@ -1,0 +1,127 @@
+export const courses = [
+  {
+    id: "python-fundamentals",
+    title: "Python Programming Fundamentals",
+    instructor: "Dr. Sarah Chen",
+    thumbnail: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=600&h=340&fit=crop",
+    duration: "12 hours",
+    lessons: 48,
+    rating: 4.8,
+    description: "Master Python from scratch with hands-on projects and real-world applications. This comprehensive course covers everything from basic syntax to advanced concepts.",
+    learnings: [
+      "Core Python syntax and data types",
+      "Functions, classes, and OOP",
+      "File handling and error management",
+      "Working with APIs and libraries",
+      "Build real-world projects",
+    ],
+    curriculum: [
+      {
+        title: "Getting Started",
+        lessons: [
+          { id: "1", title: "Introduction to Python", completed: true, locked: false },
+          { id: "2", title: "Setting Up Your Environment", completed: true, locked: false },
+          { id: "3", title: "Your First Python Program", completed: false, locked: false },
+        ],
+      },
+      {
+        title: "Python Basics",
+        lessons: [
+          { id: "4", title: "Variables and Data Types", completed: false, locked: false },
+          { id: "5", title: "Operators and Expressions", completed: false, locked: false },
+          { id: "6", title: "Control Flow", completed: false, locked: true },
+        ],
+      },
+      {
+        title: "Functions & OOP",
+        lessons: [
+          { id: "7", title: "Defining Functions", completed: false, locked: true },
+          { id: "8", title: "Classes and Objects", completed: false, locked: true },
+          { id: "9", title: "Inheritance", completed: false, locked: true },
+        ],
+      },
+    ],
+  },
+  {
+    id: "web-development",
+    title: "Full-Stack Web Development",
+    instructor: "James Rodriguez",
+    thumbnail: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=600&h=340&fit=crop",
+    duration: "20 hours",
+    lessons: 64,
+    rating: 4.7,
+    description: "Build modern web applications with React, Node.js, and databases.",
+    learnings: ["HTML, CSS, JavaScript", "React fundamentals", "Node.js & Express", "Database design", "Deployment"],
+    curriculum: [
+      {
+        title: "HTML & CSS",
+        lessons: [
+          { id: "1", title: "HTML Basics", completed: false, locked: false },
+          { id: "2", title: "CSS Styling", completed: false, locked: false },
+        ],
+      },
+    ],
+  },
+  {
+    id: "machine-learning",
+    title: "Machine Learning with Python",
+    instructor: "Dr. Emily Watson",
+    thumbnail: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&h=340&fit=crop",
+    duration: "16 hours",
+    lessons: 52,
+    rating: 4.9,
+    description: "Dive into ML algorithms, neural networks, and data science with Python.",
+    learnings: ["Supervised learning", "Neural networks", "Data preprocessing", "Model evaluation", "Deep learning basics"],
+    curriculum: [
+      {
+        title: "Introduction",
+        lessons: [
+          { id: "1", title: "What is Machine Learning?", completed: false, locked: false },
+          { id: "2", title: "Setting Up Tools", completed: false, locked: false },
+        ],
+      },
+    ],
+  },
+  {
+    id: "data-science",
+    title: "Data Science & Analytics",
+    instructor: "Michael Park",
+    thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=340&fit=crop",
+    duration: "14 hours",
+    lessons: 42,
+    rating: 4.6,
+    description: "Learn data analysis, visualization, and statistical methods for real-world insights.",
+    learnings: ["Pandas & NumPy", "Data visualization", "Statistical analysis", "Data cleaning", "Reporting"],
+    curriculum: [],
+  },
+  {
+    id: "cloud-computing",
+    title: "Cloud Computing Essentials",
+    instructor: "Lisa Thompson",
+    thumbnail: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&h=340&fit=crop",
+    duration: "10 hours",
+    lessons: 36,
+    rating: 4.5,
+    description: "Understand cloud platforms, services, and deployment strategies.",
+    learnings: ["Cloud fundamentals", "AWS basics", "Serverless computing", "Cloud security", "Cost management"],
+    curriculum: [],
+  },
+  {
+    id: "ui-ux-design",
+    title: "UI/UX Design Masterclass",
+    instructor: "Anna Kim",
+    thumbnail: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=340&fit=crop",
+    duration: "8 hours",
+    lessons: 30,
+    rating: 4.8,
+    description: "Create beautiful, user-centered designs with modern tools and principles.",
+    learnings: ["Design principles", "Wireframing", "Prototyping", "User research", "Design systems"],
+    curriculum: [],
+  },
+];
+
+export const testimonials = [
+  { name: "Alex Rivera", role: "Software Engineer", content: "LearnAI transformed my career. The AI tutor helped me understand complex concepts in half the time.", avatar: "AR" },
+  { name: "Priya Sharma", role: "Data Scientist", content: "The structured learning path and smart recommendations kept me motivated throughout my journey.", avatar: "PS" },
+  { name: "David Kim", role: "Student", content: "Best learning platform I've used. The video lessons are top-notch and the AI assistant is incredibly helpful.", avatar: "DK" },
+];
