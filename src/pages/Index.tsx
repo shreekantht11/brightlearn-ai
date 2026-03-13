@@ -25,7 +25,8 @@ const Index = () => {
       <Navbar />
 
       {/* Hero */}
-      <section className="relative overflow-hidden min-h-[90vh] flex items-center bg-white">
+      <section className="relative overflow-hidden min-h-[90vh] flex items-center bg-primary">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary to-blue-800 -z-10" />
         <div className="container relative z-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             
@@ -35,20 +36,20 @@ const Index = () => {
               animate="visible"
               className="max-w-2xl text-left"
             >
-              <motion.h1 variants={fadeUp} custom={0} className="text-6xl md:text-8xl font-black tracking-tight text-[#C44A00] mb-2 leading-[1.0] drop-shadow-sm">
+              <motion.h1 variants={fadeUp} custom={0} className="text-6xl md:text-8xl font-black tracking-tight text-white mb-2 leading-[1.0] drop-shadow-sm">
                 Online<br/>Learning
               </motion.h1>
-              <motion.p variants={fadeUp} custom={1} className="text-lg md:text-xl font-medium text-slate-600 max-w-lg mb-8 leading-relaxed mt-4">
+              <motion.p variants={fadeUp} custom={1} className="text-lg md:text-xl font-medium text-blue-100 max-w-lg mb-8 leading-relaxed mt-4 drop-shadow-sm">
                 Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
               </motion.p>
               <motion.div variants={fadeUp} custom={2} className="flex flex-wrap items-center gap-4">
                 <Link to="/register">
-                  <Button size="lg" className="rounded-full px-10 h-14 text-lg font-bold bg-[#D35400] hover:bg-[#A04000] text-white shadow-xl shadow-orange-500/20 transition-all">
+                  <Button size="lg" className="rounded-full px-10 h-14 text-lg font-bold bg-[#D35400] hover:bg-[#A04000] text-white shadow-xl shadow-orange-500/30 transition-all border-0">
                     Sign Up
                   </Button>
                 </Link>
                 <Link to="/courses">
-                  <Button variant="ghost" size="lg" className="rounded-full px-8 h-14 text-lg font-bold text-[#D35400] hover:bg-orange-50 transition-all">
+                  <Button variant="outline" size="lg" className="rounded-full px-8 h-14 text-lg font-bold text-white hover:text-primary border-2 border-white/50 hover:bg-white transition-all bg-transparent backdrop-blur-sm">
                     View Courses <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
@@ -62,11 +63,13 @@ const Index = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="relative hidden lg:block"
             >
-              <img 
-                src="https://img.freepik.com/free-vector/online-tutorials-concept_52683-37480.jpg" 
-                alt="Online Learning Illustration" 
-                className="w-full h-auto object-contain scale-[1.10] drop-shadow-2xl"
-              />
+              <div className="p-4 bg-white/20 backdrop-blur-xl rounded-[3rem] shadow-2xl overflow-hidden border border-white/30">
+                <img 
+                  src="https://img.freepik.com/free-vector/online-tutorials-concept_52683-37480.jpg" 
+                  alt="Online Learning Illustration" 
+                  className="w-full h-auto object-contain scale-[1.05] rounded-[2rem] bg-white drop-shadow-sm"
+                />
+              </div>
             </motion.div>
 
           </div>

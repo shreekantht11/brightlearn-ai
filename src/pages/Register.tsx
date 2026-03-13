@@ -43,17 +43,18 @@ const Register = () => {
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-slate-50 relative overflow-hidden">
 
-      <div className="hidden lg:flex items-center justify-center relative bg-orange-50/50 p-12 border-r border-orange-100">
+      <div className="hidden lg:flex items-center justify-center relative bg-primary p-12">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary to-blue-800" />
         <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} className="max-w-md text-center relative z-10">
           <motion.div 
             animate={{ y: [0, -5, 0] }} 
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="h-24 w-24 rounded-3xl bg-gradient-to-br from-[#E05A10] to-[#C44A00] flex items-center justify-center mx-auto mb-8 shadow-xl shadow-orange-500/20"
+            className="h-24 w-24 rounded-3xl bg-white flex items-center justify-center mx-auto mb-8 shadow-xl shadow-black/10"
           >
-            <BookOpen className="h-12 w-12 text-white" />
+            <BookOpen className="h-12 w-12 text-[#D35400]" />
           </motion.div>
-          <h2 className="text-4xl font-extrabold text-slate-800 mb-4">Start Learning Today</h2>
-          <p className="text-lg text-slate-600 leading-relaxed">Join thousands of learners and unlock AI-powered courses tailored specifically for your career goals.</p>
+          <h2 className="text-4xl font-extrabold text-white mb-4">Start Learning Today</h2>
+          <p className="text-lg text-blue-100 leading-relaxed">Join thousands of learners and unlock AI-powered courses tailored specifically for your career goals.</p>
         </motion.div>
       </div>
 
