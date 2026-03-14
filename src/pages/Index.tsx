@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Sparkles, BookOpen, Brain, BarChart3, Target, Star, ArrowRight } from "lucide-react";
@@ -22,6 +23,14 @@ const features = [
 
 const Index = () => {
   const { openModal } = useAuthModal();
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+
+  useEffect(() => {
+    const checkLogin = () => setIsLoggedIn(!!localStorage.getItem("token"));
+    window.addEventListener("storage", checkLogin);
+    return () => window.removeEventListener("storage", checkLogin);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -45,12 +54,14 @@ const Index = () => {
                 Your smartest path to mastery. Learn at your own pace with AI-curated courses, interactive video lessons, and a built-in AI tutor — all in one place.
               </motion.p>
               <motion.div variants={fadeUp} custom={2} className="flex flex-wrap items-center gap-4">
-                <Button
-                    size="lg"
-                    onClick={() => openModal("register")}
-                    className="rounded-full px-10 h-14 text-lg font-bold bg-white text-primary hover:bg-white/90 shadow-xl shadow-black/10 transition-all border-0">
-                    Sign Up
-                  </Button>
+                {!isLoggedIn && (
+                  <Button
+                      size="lg"
+                      onClick={() => openModal("register")}
+                      className="rounded-full px-10 h-14 text-lg font-bold bg-white text-primary hover:bg-white/90 shadow-xl shadow-black/10 transition-all border-0">
+                      Sign Up
+                    </Button>
+                )}
                 <Link to="/courses">
                   <Button variant="outline" size="lg" className="rounded-full px-8 h-14 text-lg font-bold text-white hover:text-primary border-2 border-white/50 hover:bg-white transition-all bg-transparent backdrop-blur-sm">
                     View Courses <ArrowRight className="ml-2 h-5 w-5" />

@@ -29,6 +29,7 @@ const Navbar = () => {
   const links = [
     { to: "/", label: "Home" },
     { to: "/courses", label: "Courses" },
+    { to: "/practice", label: "Practice" },
     ...(isLoggedIn ? [{ to: "/profile", label: "Profile" }] : []),
   ];
 

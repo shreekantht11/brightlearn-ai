@@ -240,53 +240,57 @@ const AuthModal = () => {
               </div>
 
               {/* Body */}
-              <div className="px-8 py-6 min-h-[420px] flex flex-col justify-between">
+              <div className="px-8 py-6 h-[500px] flex flex-col">
                 {/* Heading */}
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeTab + "-heading"}
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 8 }}
-                    transition={{ duration: 0.18 }}
-                    className="mb-5"
-                  >
-                    <h2 className="text-xl font-extrabold text-slate-900">
-                      {activeTab === "login" ? "Welcome back!" : "Create your account"}
-                    </h2>
-                    <p className="text-sm text-slate-400 mt-0.5">
-                      {activeTab === "login"
-                        ? "Log in to continue your learning journey."
-                        : "Join thousands of learners on BrightLearn."}
-                    </p>
-                  </motion.div>
-                </AnimatePresence>
+                <div className="mb-6 h-[50px]">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeTab + "-heading"}
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 8 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <h2 className="text-xl font-extrabold text-slate-900">
+                        {activeTab === "login" ? "Welcome back!" : "Create your account"}
+                      </h2>
+                      <p className="text-sm text-slate-400 mt-0.5">
+                        {activeTab === "login"
+                          ? "Log in to continue your learning journey."
+                          : "Join thousands of learners on BrightLearn."}
+                      </p>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
 
-                {/* Form */}
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeTab}
-                    initial={{ opacity: 0, x: activeTab === "login" ? -20 : 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: activeTab === "login" ? 20 : -20 }}
-                    transition={{ duration: 0.22, ease: "easeOut" }}
-                  >
-                    {activeTab === "login" ? (
-                      <LoginForm onSuccess={handleLoginSuccess} />
-                    ) : (
-                      <RegisterForm onSuccess={handleRegisterSuccess} />
-                    )}
-                  </motion.div>
-                </AnimatePresence>
+                {/* Form Container */}
+                <div className="relative flex-1 w-full">
+                  <AnimatePresence initial={false}>
+                    <motion.div
+                      key={activeTab}
+                      initial={{ opacity: 0, x: activeTab === "login" ? -24 : 24 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: activeTab === "login" ? 24 : -24 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="absolute inset-0"
+                    >
+                      {activeTab === "login" ? (
+                        <LoginForm onSuccess={handleLoginSuccess} />
+                      ) : (
+                        <RegisterForm onSuccess={handleRegisterSuccess} />
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
 
                 {/* Footer switch */}
-                <p className="text-center text-xs text-slate-400 mt-6">
+                <div className="mt-4 pt-4 border-t border-slate-100 text-center text-xs text-slate-400">
                   {activeTab === "login" ? (
                     <>No account? <button onClick={() => switchTab("register")} className="text-primary font-semibold hover:underline">Sign up free</button></>
                   ) : (
                     <>Already have one? <button onClick={() => switchTab("login")} className="text-primary font-semibold hover:underline">Log in</button></>
                   )}
-                </p>
+                </div>
               </div>
             </motion.div>
           </div>

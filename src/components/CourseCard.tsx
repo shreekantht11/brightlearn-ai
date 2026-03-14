@@ -1,7 +1,11 @@
-import { Link } from "react-router-dom";
-import { Clock, BookOpen, User } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { createPortal } from "react-dom";
+import { Clock, BookOpen, User, Play, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
+import { useAuthModal } from "@/context/AuthModalContext";
 
 interface CourseCardProps {
   id: string;
@@ -14,15 +18,110 @@ interface CourseCardProps {
 }
 
 const CourseCard = ({ id, title, instructor, thumbnail, duration, lessons, progress }: CourseCardProps) => {
+  const [showEnrollConfirm, setShowEnrollConfirm] = useState(false);
+  const [enrolling, setEnrolling] = useState(false);
+  const { openModal } = useAuthModal();
+  const navigate = useNavigate();
+
+  const isLiveId = /^\d+$/.test(id);
+
+  const handleEnrollClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isLiveId) {
+      navigate(`/learn/${id}`);
+      return;
+    }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      openModal("login");
+      return;
+    }
+    setShowEnrollConfirm(true);
+  };
+
+  const confirmEnroll = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setEnrolling(true);
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`http://localhost:5000/api/enroll/${id}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        toast.success(`Successfully enrolled! View it in your Profile.`);
+        setShowEnrollConfirm(false);
+      } else {
+        toast.error("Enrollment failed. Please login.");
+        openModal("login");
+      }
+    } catch {
+      toast.error("Network error");
+    } finally {
+      setEnrolling(false);
+    }
+  };
+
   return (
-    <motion.div
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.2 }}
-    >
-      <Link
-        to={`/course/${id}`}
-        className="group block rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow duration-300"
+    <>
+      {typeof document !== "undefined" && createPortal(
+        <AnimatePresence>
+          {showEnrollConfirm && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); if(!enrolling) setShowEnrollConfirm(false); }}
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative z-10 border border-border text-center"
+              >
+                <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
+                  <Play className="h-8 w-8 text-primary ml-1" />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">Enroll in Course</h2>
+                <p className="text-slate-500 mb-8">
+                  Are you sure you want to enroll in "{title}"?
+                </p>
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    className="flex-1 rounded-xl h-12"
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowEnrollConfirm(false); }}
+                    disabled={enrolling}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="flex-1 rounded-xl h-12 bg-primary text-white hover:bg-primary/90"
+                    onClick={confirmEnroll}
+                    disabled={enrolling}
+                  >
+                    {enrolling ? <Loader2 className="h-5 w-5 animate-spin mx-auto" /> : "Confirm"}
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
+      <motion.div
+        whileHover={{ y: -4 }}
+        transition={{ duration: 0.2 }}
       >
+        <Link
+          to={`/course/${id}`}
+          className="group block rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow duration-300 relative z-10"
+        >
         <div className="aspect-video bg-muted overflow-hidden">
           <img src={thumbnail} alt={title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
         </div>
@@ -48,11 +147,14 @@ const CourseCard = ({ id, title, instructor, thumbnail, duration, lessons, progr
             </div>
           )}
           {progress === undefined && (
-            <Button size="sm" className="w-full mt-1">Enroll Now</Button>
+            <Button size="sm" className="w-full mt-1" onClick={handleEnrollClick}>
+              Enroll Now
+            </Button>
           )}
         </div>
-      </Link>
-    </motion.div>
+        </Link>
+      </motion.div>
+    </>
   );
 };
 

@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import CourseCard from "@/components/CourseCard";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useAuthModal } from "@/context/AuthModalContext";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -18,6 +19,7 @@ const Profile = () => {
   const [profile, setProfile] = useState<any>(null);
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { openModal } = useAuthModal();
   
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({ name: "", password: "" });
@@ -33,7 +35,7 @@ const Profile = () => {
       try {
         const [profileRes, enrollmentsRes] = await Promise.all([
           fetch("http://localhost:5000/api/users/profile", { headers: { Authorization: `Bearer ${token}` } }),
-          fetch("http://localhost:5000/api/users/enrollments", { headers: { Authorization: `Bearer ${token}` } })
+          fetch("http://localhost:5000/api/enroll/my-courses", { headers: { Authorization: `Bearer ${token}` } })
         ]);
 
         if (profileRes.ok && enrollmentsRes.ok) {
@@ -42,6 +44,14 @@ const Profile = () => {
           setProfile(profileData);
           setEditData({ name: profileData.name, password: "" });
           setEnrollments(enrollmentsData);
+        } else if (profileRes.status === 401 || enrollmentsRes.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("user");
+          window.dispatchEvent(new Event("storage"));
+          navigate("/");
+          openModal("login");
+          toast.error("Session expired. Please log in again.");
         } else {
           toast.error("Failed to load profile data");
         }
@@ -100,10 +110,10 @@ const Profile = () => {
     </div>
   );
 
-  const totalLessonsCompleted = enrollments.reduce((sum, e) => sum + e.completed_videos, 0);
+  const totalLessonsCompleted = enrollments.reduce((sum, e) => sum + (e.completedLessons || 0), 0);
   const totalCoursesEnrolled = enrollments.length;
   const totalPercentage = enrollments.length > 0 
-    ? Math.round(enrollments.reduce((sum, e) => sum + e.percentage, 0) / enrollments.length) 
+    ? Math.round(enrollments.reduce((sum, e) => sum + (e.progressPercentage || 0), 0) / enrollments.length) 
     : 0;
 
   const stats = [
@@ -208,14 +218,14 @@ const Profile = () => {
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {enrollments.map((e) => (
                   <CourseCard 
-                    key={e.subject_id} 
-                    id={e.subject_id.toString()}
+                    key={e.id} 
+                    id={e.id.toString()}
                     title={e.title}
-                    instructor="LearnAI Platform"
-                    thumbnail={`https://source.unsplash.com/random/800x600?${e.slug}`}
-                    duration={`${e.total_videos * 15} mins`}
-                    lessons={e.total_videos}
-                    progress={e.percentage}
+                    instructor="BrightLearn Platform"
+                    thumbnail={e.thumbnail || `https://source.unsplash.com/random/800x600?${e.title}`}
+                    duration={`${(e.totalLessons || 0) * 15} mins`}
+                    lessons={e.totalLessons || 0}
+                    progress={e.progressPercentage || 0}
                   />
                 ))}
               </div>

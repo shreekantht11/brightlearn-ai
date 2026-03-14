@@ -9,6 +9,8 @@ import subjectRoutes from './modules/subjects/subject.routes';
 import videoRoutes from './modules/videos/video.routes';
 import progressRoutes from './modules/progress/progress.routes';
 import aiRoutes from './modules/ai/ai.routes';
+import practiceRoutes from './modules/practice/practice.routes';
+import enrollmentRoutes from './modules/enrollment/enrollment.routes';
 
 const app = express();
 
@@ -27,6 +29,8 @@ app.use('/api/subjects', subjectRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/practice', practiceRoutes);
+app.use('/api/enroll', enrollmentRoutes);
 
 // Error Middleware
 app.use(errorMiddleware);

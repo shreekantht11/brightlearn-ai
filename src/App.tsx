@@ -13,6 +13,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import BackButton from "./components/BackButton";
 import AuthModal from "./components/AuthModal";
+import Practice from "./pages/Practice";
+import PracticeQuiz from "./pages/PracticeQuiz";
 import { AuthModalProvider } from "./context/AuthModalContext";
 
 const queryClient = new QueryClient();
@@ -35,6 +37,8 @@ const App = () => (
             <Route path="/course/:id" element={<CourseDetail />} />
             <Route path="/learn/:id" element={<Learning />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/practice" element={<Practice />} />
+            <Route path="/practice/test/:testId" element={<PracticeQuiz />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthModalProvider>
