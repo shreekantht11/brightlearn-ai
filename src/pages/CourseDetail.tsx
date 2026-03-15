@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { courses as mockCourses } from "@/lib/data";
 import { useEnrollModal } from "@/context/EnrollModalContext";
+import { API_URL } from "@/lib/api-config";
 
 type CourseVideo = { id: number | string; title: string; description?: string; youtube_url?: string; duration_seconds?: number; completed?: boolean; locked?: boolean; };
 type CourseSection = { id: number | string; title: string; videos?: CourseVideo[]; };
@@ -40,9 +41,9 @@ const CourseDetail = () => {
       try {
         const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
         const [subjectRes, treeRes, enrollmentsRes] = await Promise.all([
-          fetch(`http://localhost:5000/api/subjects/${id}`),
-          fetch(`http://localhost:5000/api/subjects/${id}/tree`),
-          token ? fetch(`http://localhost:5000/api/enroll/${id}/status`, { headers }) : Promise.resolve(null),
+          fetch(`${API_URL}/api/subjects/${id}`),
+          fetch(`${API_URL}/api/subjects/${id}/tree`),
+          token ? fetch(`${API_URL}/api/enroll/${id}/status`, { headers }) : Promise.resolve(null),
         ]);
         if (!subjectRes.ok) { toast.error("Course not found"); navigate("/courses"); return; }
         const subjectData = await subjectRes.json();

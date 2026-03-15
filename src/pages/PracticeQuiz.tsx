@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, ArrowLeft, CheckCircle2, XCircle, AlertCircle, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { API_URL } from "@/lib/api-config";
 
 export default function PracticeQuiz() {
   const { testId } = useParams();
@@ -25,7 +26,7 @@ export default function PracticeQuiz() {
 
     const fetchQuestions = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/practice/test/${testId}`, {
+        const res = await fetch(`${API_URL}/api/practice/test/${testId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.ok) {
@@ -66,7 +67,7 @@ export default function PracticeQuiz() {
     };
 
     try {
-      const res = await fetch(`http://localhost:5000/api/practice/submit`, {
+      const res = await fetch(`${API_URL}/api/practice/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(payload)

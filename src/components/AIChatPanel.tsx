@@ -4,6 +4,7 @@ import { MessageCircle, X, Send, Bot, Sparkles, Loader2, AlertCircle } from "luc
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuthModal } from "@/context/AuthModalContext";
+import { API_URL } from "@/lib/api-config";
 
 interface Message {
   role: "user" | "ai";
@@ -113,7 +114,7 @@ const AIChatPanel = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/ai/chat", {
+      const response = await fetch(`${API_URL}/api/ai/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

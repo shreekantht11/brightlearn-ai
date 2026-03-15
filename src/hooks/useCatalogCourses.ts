@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { BackendSubject, CatalogCourse, getLegacyCatalogCourses, mergeCatalogCourses } from "@/lib/catalog";
+import { API_URL } from "@/lib/api-config";
 
 export const useCatalogCourses = () => {
   const [courses, setCourses] = useState<CatalogCourse[]>(getLegacyCatalogCourses());
@@ -9,7 +10,7 @@ export const useCatalogCourses = () => {
     const fetchCourses = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch("http://localhost:5000/api/subjects", {
+        const res = await fetch(`${API_URL}/api/subjects`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
 

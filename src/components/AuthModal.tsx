@@ -5,6 +5,7 @@ import { X, BookOpen, Loader2, Eye, EyeOff, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuthModal } from "@/context/AuthModalContext";
+import { API_URL } from "@/lib/api-config";
 
 const inputClass =
   "w-full rounded-xl border border-input bg-background px-5 py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all";
@@ -43,7 +44,7 @@ const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
     if (!formData.email || !formData.password) { toast.error("Please fill in all fields"); return; }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+      const res = await fetch(`${API_URL}/api/auth/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to log in");
       localStorage.setItem("token", data.token);
@@ -101,7 +102,7 @@ const RegisterForm = ({ onSuccess }: { onSuccess: () => void }) => {
     if (!formData.name || !formData.email || !formData.password) { toast.error("Please fill in all fields"); return; }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+      const res = await fetch(`${API_URL}/api/auth/register`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to register");
       toast.success("Account created! Please log in.");

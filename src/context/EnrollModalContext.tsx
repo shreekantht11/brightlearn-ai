@@ -5,6 +5,7 @@ import { Play, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuthModal } from "./AuthModalContext";
+import { API_URL } from "@/lib/api-config";
 
 interface EnrollModalContextType {
   openEnrollModal: (courseId: string, courseTitle: string) => void;
@@ -63,7 +64,7 @@ export const EnrollModalProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      const res = await fetch(`http://localhost:5000/api/enroll/${courseId}`, {
+      const res = await fetch(`${API_URL}/api/enroll/${courseId}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` }
       });

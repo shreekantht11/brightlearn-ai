@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import VideoPlayer from "@/components/VideoPlayer";
 import { courses as mockCourses } from "@/lib/data";
 import { toast } from "sonner";
+import { API_URL } from "@/lib/api-config";
 
 const DEMO_VIDEO_ID = "dQw4w9WgXcQ";
 
@@ -78,7 +79,7 @@ const Learning = () => {
   const fetchProgress = useCallback(async (videoId: number) => {
     if (!token || !isLiveId) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/progress/videos/${videoId}`, {
+      const res = await fetch(`${API_URL}/api/progress/videos/${videoId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -100,7 +101,7 @@ const Learning = () => {
     }
 
     try {
-      await fetch(`http://localhost:5000/api/progress/videos/${videoId}`, {
+      await fetch(`${API_URL}/api/progress/videos/${videoId}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -159,10 +160,10 @@ const Learning = () => {
 
       try {
         const [subjectRes, treeRes] = await Promise.all([
-          fetch(`http://localhost:5000/api/subjects/${id}`, {
+          fetch(`${API_URL}/api/subjects/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          fetch(`http://localhost:5000/api/subjects/${id}/tree`, {
+          fetch(`${API_URL}/api/subjects/${id}/tree`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
         ]);
@@ -187,7 +188,7 @@ const Learning = () => {
           const completedIds: Array<number | string> = [];
 
           await Promise.all(flatVideos.map(async (video: Lesson) => {
-            const pRes = await fetch(`http://localhost:5000/api/progress/videos/${video.id}`, {
+            const pRes = await fetch(`${API_URL}/api/progress/videos/${video.id}`, {
               headers: { Authorization: `Bearer ${token}` }
             });
             if (pRes.ok) {

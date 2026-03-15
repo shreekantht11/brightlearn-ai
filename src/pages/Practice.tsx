@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
 import { useAuthModal } from "@/context/AuthModalContext";
+import { API_URL } from "@/lib/api-config";
 
 export default function Practice() {
   const [subjects, setSubjects] = useState<any[]>([]);
@@ -27,7 +28,7 @@ export default function Practice() {
 
     const fetchSubjects = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/subjects", {
+        const res = await fetch(`${API_URL}/api/subjects`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (res.ok) {
@@ -52,7 +53,7 @@ export default function Practice() {
     setLoadingTests(true);
     try {
       // Fetch tests
-      const res = await fetch(`http://localhost:5000/api/practice/tests/${subject.id}`, {
+      const res = await fetch(`${API_URL}/api/practice/tests/${subject.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.ok) {
@@ -62,7 +63,7 @@ export default function Practice() {
         // Fetch best result for each test
         const resultsMap: Record<number, any> = {};
         for (const t of testsData) {
-          const rRes = await fetch(`http://localhost:5000/api/practice/results/${t.id}`, {
+          const rRes = await fetch(`${API_URL}/api/practice/results/${t.id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           if (rRes.ok) {

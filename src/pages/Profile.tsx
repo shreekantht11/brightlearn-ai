@@ -10,6 +10,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuthModal } from "@/context/AuthModalContext";
+import { API_URL } from "@/lib/api-config";
 
 type ProfileData = { name: string; email: string; created_at: string; };
 type Enrollment = { id: number; title: string; thumbnail?: string; totalLessons?: number; completedLessons?: number; progressPercentage?: number; };
@@ -35,7 +36,7 @@ const Profile = () => {
       toast.error("Session expired. Please log in again.");
     };
     const fetchEnrollments = async (authToken: string) => {
-      const res = await fetch("http://localhost:5000/api/enroll/my-courses", { headers: { Authorization: `Bearer ${authToken}` } });
+      const res = await fetch(`${API_URL}/api/enroll/my-courses`, { headers: { Authorization: `Bearer ${authToken}` } });
       if (res.ok) { const d = await res.json(); setEnrollments(d); return d; }
       if (res.status === 401) handleUnauthorized(); else toast.error("Failed to load enrollments");
       return null;
@@ -46,7 +47,7 @@ const Profile = () => {
       const token = localStorage.getItem("token");
       if (!token) { navigate("/"); openModal("login"); return; }
       try {
-        const profileRes = await fetch("http://localhost:5000/api/users/profile", { headers: { Authorization: `Bearer ${token}` } });
+        const profileRes = await fetch(`${API_URL}/api/users/profile`, { headers: { Authorization: `Bearer ${token}` } });
         if (profileRes.ok) {
           const profileData = await profileRes.json();
           const enrollmentsData = await fetchEnrollments(token);
@@ -70,7 +71,7 @@ const Profile = () => {
   const handleUpdateProfile = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch("http://localhost:5000/api/users/profile", {
+      const response = await fetch(`${API_URL}/api/users/profile`, {
         method: "PUT", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ name: editData.name, ...(editData.password ? { password: editData.password } : {}) })
       });
