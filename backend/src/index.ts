@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { env } from './config/env';
+import pool from './config/database';
 import { errorMiddleware } from './middleware/errorMiddleware';
 
 import authRoutes from './modules/auth/auth.routes';
@@ -35,6 +36,22 @@ app.use('/api/enroll', enrollmentRoutes);
 // Error Middleware
 app.use(errorMiddleware);
 
-app.listen(env.PORT, () => {
-  console.log(`Server is running on port ${env.PORT}`);
-});
+const startServer = async () => {
+  try {
+    const connection = await pool.getConnection();
+    connection.release();
+
+    console.log(
+      `Database connected: ${env.DB_HOST}:${env.DB_PORT}/${env.DB_NAME} (ssl=${env.DB_SSL ? 'on' : 'off'})`
+    );
+
+    app.listen(env.PORT, () => {
+      console.log(`Server is running on port ${env.PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to connect to database during startup:', error);
+    process.exit(1);
+  }
+};
+
+startServer();

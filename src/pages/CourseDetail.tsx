@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, BookOpen, ChevronDown, CheckCircle2, Play, Loader2, Star, Users, Award } from "lucide-react";
+import { Clock, BookOpen, ChevronDown, CheckCircle2, Play, Loader2, Star, Users, Award, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { courses as mockCourses } from "@/lib/data";
 import { useEnrollModal } from "@/context/EnrollModalContext";
 
-type CourseVideo = { id: number | string; title: string; duration_seconds?: number; completed?: boolean; locked?: boolean; };
+type CourseVideo = { id: number | string; title: string; description?: string; youtube_url?: string; duration_seconds?: number; completed?: boolean; locked?: boolean; };
 type CourseSection = { id: number | string; title: string; videos?: CourseVideo[]; };
 type CourseData = { id: number | string; title: string; description?: string; instructor?: string; duration?: string; lessons?: number; rating?: number; thumbnail?: string; learnings?: string[]; };
 
@@ -93,6 +93,15 @@ const CourseDetail = () => {
         )}
         <div className="container relative py-14 md:py-20">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl">
+            {/* Back button — sits cleanly above the title */}
+            <button
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-1.5 text-white/70 hover:text-white text-sm font-medium mb-6 transition-colors group"
+            >
+              <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+              Back to Courses
+            </button>
+
             <h1 className="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">{course.title}</h1>
             <p className="text-white/70 mb-6 text-lg max-w-2xl">{course.description}</p>
             <div className="flex flex-wrap items-center gap-5 text-sm text-white/80 mb-8">
@@ -155,7 +164,13 @@ const CourseDetail = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <h2 className="text-xl font-black text-foreground mb-5">Course Curriculum</h2>
             {tree.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No content added to this course yet.</p>
+              <div className="rounded-2xl border border-dashed border-border bg-card p-6">
+                <p className="text-sm font-semibold text-foreground">Curriculum is being prepared</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  This course is enrolled and ready, but lesson videos have not been attached in this environment yet.
+                  Once curriculum is seeded, the lesson list and learning player will appear here automatically.
+                </p>
+              </div>
             ) : (
               <div className="space-y-3">
                 {tree.map((section, i) => (
@@ -182,11 +197,18 @@ const CourseDetail = () => {
                         >
                           <div className="border-t border-border">
                             {(section.videos || []).map((video) => (
-                              <div key={video.id} className="flex items-center gap-3 px-5 py-3.5 hover:bg-muted/20 transition-colors border-b border-border/50 last:border-0">
-                                {video.completed ? <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0" />
-                                  : video.locked ? <BookOpen className="h-4 w-4 text-muted-foreground/40 flex-shrink-0" />
-                                  : <Play className="h-4 w-4 text-primary flex-shrink-0" />}
-                                <span className={`text-sm flex-1 ${video.locked ? "text-muted-foreground/50" : "text-foreground"}`}>{video.title}</span>
+                              <div key={video.id} className="flex items-start gap-3 px-5 py-3.5 hover:bg-muted/20 transition-colors border-b border-border/50 last:border-0">
+                                <div className="pt-0.5">
+                                  {video.completed ? <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0" />
+                                    : video.locked ? <BookOpen className="h-4 w-4 text-muted-foreground/40 flex-shrink-0" />
+                                    : <Play className="h-4 w-4 text-primary flex-shrink-0" />}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <span className={`text-sm font-medium block ${video.locked ? "text-muted-foreground/50" : "text-foreground"}`}>{video.title}</span>
+                                  {video.description && (
+                                    <p className="mt-1 text-xs leading-5 text-muted-foreground line-clamp-2">{video.description}</p>
+                                  )}
+                                </div>
                                 <span className="text-xs text-muted-foreground shrink-0">{Math.floor((video.duration_seconds || 600) / 60)} min</span>
                               </div>
                             ))}
