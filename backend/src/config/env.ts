@@ -13,4 +13,5 @@ export const env = {
   JWT_SECRET: process.env.JWT_SECRET || 'secret',
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET || 'refresh_secret',
   HF_API_KEY: process.env.HF_API_KEY || '',
+  HF_MODEL: process.env.HF_MODEL || 'deepseek-ai/DeepSeek-R1:fastest',
 };

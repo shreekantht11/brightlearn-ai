@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import BackButton from "./components/BackButton";
 import AuthModal from "./components/AuthModal";
+import AIChatPanel from "./components/AIChatPanel";
 import Practice from "./pages/Practice";
 import PracticeQuiz from "./pages/PracticeQuiz";
 import { AuthModalProvider } from "./context/AuthModalContext";
@@ -30,6 +31,7 @@ const App = () => (
           <EnrollModalProvider>
             <AuthModal />
             <BackButton />
+            <AIChatPanel />
             <Routes>
               <Route path="/" element={<Index />} />
               {/* Legacy routes — redirect to home and open modal */}

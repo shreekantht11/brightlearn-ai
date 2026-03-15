@@ -18,7 +18,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import VideoPlayer from "@/components/VideoPlayer";
-import AIChatPanel from "@/components/AIChatPanel";
 import { courses as mockCourses } from "@/lib/data";
 import { toast } from "sonner";
 
@@ -512,8 +511,6 @@ const Learning = () => {
           </div>
         </main>
       </div>
-
-      <AIChatPanel />
     </div>
   );
 };
