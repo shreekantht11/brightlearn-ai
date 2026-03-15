@@ -9,6 +9,21 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuthModal } from "@/context/AuthModalContext";
 
+type ProfileData = {
+  name: string;
+  email: string;
+  created_at: string;
+};
+
+type Enrollment = {
+  id: number;
+  title: string;
+  thumbnail?: string;
+  totalLessons?: number;
+  completedLessons?: number;
+  progressPercentage?: number;
+};
+
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.4 } }),
@@ -16,8 +31,8 @@ const fadeUp = {
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<any>(null);
-  const [enrollments, setEnrollments] = useState<any[]>([]);
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [loading, setLoading] = useState(true);
   const { openModal } = useAuthModal();
   
@@ -25,33 +40,63 @@ const Profile = () => {
   const [editData, setEditData] = useState({ name: "", password: "" });
 
   useEffect(() => {
+    const handleUnauthorized = () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+      window.dispatchEvent(new Event("storage"));
+      navigate("/");
+      openModal("login");
+      toast.error("Session expired. Please log in again.");
+    };
+
+    const fetchEnrollments = async (authToken: string) => {
+      const res = await fetch("http://localhost:5000/api/enroll/my-courses", {
+        headers: { Authorization: `Bearer ${authToken}` }
+      });
+
+      if (res.ok) {
+        const enrollmentsData = await res.json();
+        setEnrollments(enrollmentsData);
+        return enrollmentsData;
+      }
+
+      if (res.status === 401) {
+        handleUnauthorized();
+      } else {
+        toast.error("Failed to load enrollments");
+      }
+
+      return null;
+    };
+
+    const token = localStorage.getItem("token");
+    if (!token) { navigate("/"); openModal("login"); return; }
+
     const fetchData = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        navigate("/login");
+        navigate("/");
+        openModal("login");
         return;
       }
 
       try {
-        const [profileRes, enrollmentsRes] = await Promise.all([
-          fetch("http://localhost:5000/api/users/profile", { headers: { Authorization: `Bearer ${token}` } }),
-          fetch("http://localhost:5000/api/enroll/my-courses", { headers: { Authorization: `Bearer ${token}` } })
-        ]);
+        const profileRes = await fetch("http://localhost:5000/api/users/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
 
-        if (profileRes.ok && enrollmentsRes.ok) {
+        if (profileRes.ok) {
           const profileData = await profileRes.json();
-          const enrollmentsData = await enrollmentsRes.json();
+          const enrollmentsData = await fetchEnrollments(token);
+          if (!enrollmentsData) {
+            return;
+          }
+
           setProfile(profileData);
           setEditData({ name: profileData.name, password: "" });
-          setEnrollments(enrollmentsData);
-        } else if (profileRes.status === 401 || enrollmentsRes.status === 401) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("refreshToken");
-          localStorage.removeItem("user");
-          window.dispatchEvent(new Event("storage"));
-          navigate("/");
-          openModal("login");
-          toast.error("Session expired. Please log in again.");
+        } else if (profileRes.status === 401) {
+          handleUnauthorized();
         } else {
           toast.error("Failed to load profile data");
         }
@@ -64,7 +109,21 @@ const Profile = () => {
     };
 
     fetchData();
-  }, [navigate]);
+
+    const handleEnrollmentUpdated = async () => {
+      const latestToken = localStorage.getItem("token");
+      if (!latestToken) {
+        navigate("/");
+        openModal("login");
+        return;
+      }
+
+      await fetchEnrollments(latestToken);
+    };
+
+    window.addEventListener("enrollmentUpdated", handleEnrollmentUpdated);
+    return () => window.removeEventListener("enrollmentUpdated", handleEnrollmentUpdated);
+  }, [navigate, openModal]);
 
   const handleUpdateProfile = async () => {
     const token = localStorage.getItem("token");
@@ -83,7 +142,7 @@ const Profile = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setProfile((prev: any) => ({ ...prev, name: data.user.name }));
+        setProfile((prev) => prev ? { ...prev, name: data.user.name } : prev);
         localStorage.setItem("user", JSON.stringify(data.user)); // Update local ref
         setIsEditing(false);
         setEditData(prev => ({ ...prev, password: "" })); // Clear password

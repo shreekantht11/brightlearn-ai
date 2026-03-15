@@ -5,11 +5,35 @@ import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { courses as mockCourses } from "@/lib/data";
-import { AnimatePresence } from "framer-motion";
-import { useAuthModal } from "@/context/AuthModalContext";
+import { useEnrollModal } from "@/context/EnrollModalContext";
+
+type CourseVideo = {
+  id: number | string;
+  title: string;
+  duration_seconds?: number;
+  completed?: boolean;
+  locked?: boolean;
+};
+
+type CourseSection = {
+  id: number | string;
+  title: string;
+  videos?: CourseVideo[];
+};
+
+type CourseData = {
+  id: number | string;
+  title: string;
+  description?: string;
+  instructor?: string;
+  duration?: string;
+  lessons?: number;
+  rating?: number;
+  thumbnail?: string;
+  learnings?: string[];
+};
 
 const CourseDetail = () => {
   const { id } = useParams();
@@ -17,15 +41,13 @@ const CourseDetail = () => {
 
   // Determine if this is a live DB course (numeric id) or a mock course (slug string)
   const isLiveId = /^\d+$/.test(id || "");
-  const { openModal } = useAuthModal();
+  const { openEnrollModal } = useEnrollModal();
 
-  const [course, setCourse] = useState<any>(null);
-  const [tree, setTree] = useState<any[]>([]);
+  const [course, setCourse] = useState<CourseData | null>(null);
+  const [tree, setTree] = useState<CourseSection[]>([]);
   const [loading, setLoading] = useState(true);
-  const [enrolling, setEnrolling] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [openSections, setOpenSections] = useState<number[]>([0]);
-  const [showEnrollConfirm, setShowEnrollConfirm] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -98,35 +120,21 @@ const CourseDetail = () => {
     loadData();
   }, [id, navigate, isLiveId]);
 
-  const handleEnroll = async () => {
-    if (!isLiveId) {
-      navigate(`/learn/${id}`);
-      return;
-    }
-    const token = localStorage.getItem("token");
-    if (!token) {
-      openModal("login");
-      return;
-    }
-    
-    setEnrolling(true);
-    try {
-      const res = await fetch(`http://localhost:5000/api/enroll/${id}`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) {
+  // Listen for enrollment updates from the global modal
+  useEffect(() => {
+    const onEnrolled = (event: Event) => {
+      const customEvent = event as CustomEvent<{ courseId?: string }>;
+      if (!customEvent.detail?.courseId || customEvent.detail.courseId === id) {
         setIsEnrolled(true);
-        toast.success("Successfully enrolled! Start learning now.");
-      } else {
-        toast.error("Enrollment failed. Please login first.");
       }
-    } catch {
-      toast.error("Network error");
-    } finally {
-      setEnrolling(false);
-      setShowEnrollConfirm(false);
-    }
+    };
+    window.addEventListener("enrollmentUpdated", onEnrolled);
+    return () => window.removeEventListener("enrollmentUpdated", onEnrolled);
+  }, [id]);
+
+  const handleEnrollClick = () => {
+    if (!isLiveId) { navigate(`/learn/${id}`); return; }
+    openEnrollModal(id!, course?.title || "this course");
   };
 
   const toggleSection = (i: number) => {
@@ -148,55 +156,6 @@ const CourseDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-
-      {/* Enroll Confirmation Modal */}
-      {typeof document !== "undefined" && createPortal(
-        <AnimatePresence>
-          {showEnrollConfirm && (
-            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); if(!enrolling) setShowEnrollConfirm(false); }}
-              />
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative z-10 border border-border text-center"
-              >
-                <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-                  <Play className="h-8 w-8 text-primary ml-1" />
-                </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Enroll in Course</h2>
-                <p className="text-slate-500 mb-8">
-                  Are you sure you want to enroll in "{course.title}"? Your progress will be tracked instantly.
-                </p>
-                <div className="flex gap-3">
-                  <Button
-                    variant="outline"
-                    className="flex-1 rounded-xl h-12"
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowEnrollConfirm(false); }}
-                    disabled={enrolling}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    className="flex-1 rounded-xl h-12 bg-primary text-white hover:bg-primary/90"
-                    onClick={handleEnroll}
-                    disabled={enrolling}
-                  >
-                    {enrolling ? <Loader2 className="h-5 w-5 animate-spin mx-auto" /> : "Confirm"}
-                  </Button>
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
 
       {/* Header */}
       <section className="bg-surface border-b border-border">
@@ -226,18 +185,9 @@ const CourseDetail = () => {
                   <Button
                     size="lg"
                     className="rounded-xl px-8 h-12 font-semibold"
-                    onClick={() => {
-                      if (!localStorage.getItem("token")) {
-                        openModal("login");
-                      } else if (isLiveId) {
-                        setShowEnrollConfirm(true);
-                      } else {
-                        handleEnroll();
-                      }
-                    }}
-                    disabled={enrolling}
+                    onClick={handleEnrollClick}
                   >
-                    {enrolling ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle2 className="mr-2 h-4 w-4" />}
+                    <CheckCircle2 className="mr-2 h-4 w-4" />
                     {isLiveId ? "Enroll for Free" : "Start Learning"}
                   </Button>
                   <Link to={`/learn/${course.id}`}>
@@ -291,7 +241,7 @@ const CourseDetail = () => {
                     </button>
                     {openSections.includes(i) && (
                       <div className="border-t border-border">
-                        {(section.videos || []).map((video: any) => (
+                        {(section.videos || []).map((video) => (
                           <div key={video.id} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors border-b border-border last:border-0">
                             {video.completed ? (
                               <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
@@ -334,16 +284,7 @@ const CourseDetail = () => {
                 </Link>
               </>
             ) : (
-              <Button className="w-full rounded-xl h-12 font-semibold" onClick={() => {
-                if (!localStorage.getItem("token")) {
-                  openModal("login");
-                } else if (isLiveId) {
-                  setShowEnrollConfirm(true);
-                } else {
-                  handleEnroll();
-                }
-              }} disabled={enrolling}>
-                {enrolling ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              <Button className="w-full rounded-xl h-12 font-semibold" onClick={handleEnrollClick}>
                 {isLiveId ? "Enroll Now – Free" : "Start Learning"}
               </Button>
             )}

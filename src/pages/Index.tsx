@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Sparkles, BookOpen, Brain, BarChart3, Target, Star, ArrowRight } from "lucide-react";
+import { BookOpen, Brain, BarChart3, Target, Star, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CourseCard from "@/components/CourseCard";
-import { courses, testimonials } from "@/lib/data";
+import { testimonials } from "@/lib/data";
 import { useAuthModal } from "@/context/AuthModalContext";
+import { useCatalogCourses } from "@/hooks/useCatalogCourses";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -24,6 +25,8 @@ const features = [
 const Index = () => {
   const { openModal } = useAuthModal();
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const { courses, loading } = useCatalogCourses();
+  const popularCourses = courses.slice(0, 3);
 
   useEffect(() => {
     const checkLogin = () => setIsLoggedIn(!!localStorage.getItem("token"));
@@ -123,11 +126,25 @@ const Index = () => {
               <Link to="/courses"><Button variant="ghost" className="text-primary">View all <ArrowRight className="ml-1 h-4 w-4" /></Button></Link>
             </motion.div>
           </motion.div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courses.slice(0, 3).map((c) => (
-              <CourseCard key={c.id} {...c} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {popularCourses.map((course) => (
+                <CourseCard
+                  key={course.id}
+                  id={course.id}
+                  title={course.title}
+                  instructor={course.instructor}
+                  thumbnail={course.thumbnail}
+                  duration={course.duration}
+                  lessons={course.lessons}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

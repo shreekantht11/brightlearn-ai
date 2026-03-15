@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "seed:practice": "ts-node seed_practice.ts"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
