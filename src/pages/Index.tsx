@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { BookOpen, Brain, BarChart3, Target, Star, ArrowRight, Loader2, Sparkles, Users, Award, Quote } from "lucide-react";
+import { BookOpen, Brain, BarChart3, Target, Star, ArrowRight, Loader2, Sparkles, Users, Award, Quote, Play, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -47,131 +47,131 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative overflow-hidden min-h-[92vh] flex items-center">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-accent-foreground" />
-        {/* Dot pattern overlay */}
-        <div className="absolute inset-0 opacity-[0.08]" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.8) 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+      {/* Hero - Pastel aesthetic */}
+      <section className="relative overflow-hidden min-h-[90vh] flex items-center pastel-hero-bg">
+        {/* Decorative floating shapes */}
+        <div className="absolute top-16 left-[8%] w-16 h-16 rounded-full bg-pastel-shape opacity-60 animate-float" />
+        <div className="absolute top-32 right-[12%] w-10 h-10 bg-pastel-accent opacity-50 rotate-45 animate-float-slow" />
+        <div className="absolute bottom-24 left-[15%] w-8 h-8 rounded-full bg-pastel-shape-alt opacity-40 animate-orb-pulse" />
+        <div className="absolute top-[40%] left-[5%] w-6 h-6 border-2 border-primary/20 rounded-full animate-float-slow" />
+        <div className="absolute bottom-[30%] right-[8%] w-12 h-12 border-2 border-pastel-accent rotate-12 rounded-lg animate-float" />
+        <div className="absolute top-20 right-[35%] w-4 h-4 bg-warning/30 rounded-full animate-orb-pulse" />
 
-        {/* Animated orbs */}
-        <div className="absolute top-20 right-[15%] w-72 h-72 rounded-full bg-white/10 blur-3xl animate-float-slow" />
-        <div className="absolute bottom-20 left-[10%] w-96 h-96 rounded-full bg-accent-foreground/20 blur-3xl animate-float" />
-        <div className="absolute top-1/2 right-[30%] w-40 h-40 rounded-full bg-primary-glow/30 blur-2xl animate-orb-pulse" />
+        {/* Soft dot pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(hsl(234 60% 50%) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
         <div className="container relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left Content */}
-            <motion.div initial="hidden" animate="visible" className="max-w-2xl">
+            <motion.div initial="hidden" animate="visible" className="max-w-xl">
               <motion.div variants={fadeUp} custom={0}
-                className="inline-flex items-center gap-2 rounded-xl border-2 border-white/30 bg-white/5 backdrop-blur-sm px-4 py-2 mb-8">
-                <Sparkles className="h-4 w-4 text-warning" />
-                <span className="text-sm font-medium text-white/90 tracking-wide">AI-Powered Learning Platform</span>
+                className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 mb-8">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium text-primary tracking-wide">AI-Powered Platform</span>
               </motion.div>
 
               <motion.h1 variants={fadeUp} custom={1}
-                className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black text-white mb-6 leading-none tracking-[-0.02em]">
-                BrightLearn
+                className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-light text-foreground mb-4 leading-[1.1] tracking-tight">
+                Let's{" "}
+                <span className="font-black text-primary">E-learning</span>
+                <br />
+                at your{" "}
+                <span className="font-black text-foreground relative inline-block">
+                  home
+                  <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 120 8" fill="none">
+                    <path d="M2 6C20 2 40 2 60 4C80 6 100 3 118 2" stroke="hsl(var(--primary))" strokeWidth="3" strokeLinecap="round" opacity="0.4" />
+                  </svg>
+                </span>
               </motion.h1>
 
               <motion.p variants={fadeUp} custom={2}
-                className="text-base md:text-lg text-white/80 max-w-lg mb-10 leading-relaxed">
-                Your smartest path to mastery. AI-curated courses, interactive video lessons, and a built-in AI tutor, all in one place.
+                className="text-base md:text-lg text-muted-foreground max-w-md mb-10 leading-relaxed">
+                Your smartest path to mastery. AI-curated courses, interactive video lessons, and a built-in AI tutor — all in one place.
               </motion.p>
 
               <motion.div variants={fadeUp} custom={3} className="flex flex-wrap items-center gap-4">
                 {!isLoggedIn && (
                   <Button size="lg" onClick={() => openModal("register")}
-                    className="rounded-xl px-9 h-12 text-base font-bold bg-white text-primary hover:bg-white/95 shadow-[0_0_24px_rgba(255,255,255,0.25)] border-0 hover:shadow-[0_0_32px_rgba(255,255,255,0.3)] transition-all duration-300">
-                    Get Started Free
+                    className="rounded-full px-8 h-12 text-base font-bold shadow-[var(--shadow-pastel)] hover:shadow-lg transition-all duration-300">
+                    Apply now
                   </Button>
                 )}
                 <Link to="/courses">
                   <Button variant="outline" size="lg"
-                    className="rounded-xl px-8 h-12 text-base font-bold text-white border-2 border-white/50 hover:bg-white hover:text-primary transition-all duration-300 bg-transparent">
-                    Explore Courses <ArrowRight className="ml-2 h-5 w-5" />
+                    className="rounded-full px-8 h-12 text-base font-medium border-2 border-border hover:bg-accent hover:border-primary/30 transition-all duration-300">
+                    Read More <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
               </motion.div>
+
+              {/* Social icons */}
+              <motion.div variants={fadeUp} custom={4} className="flex items-center gap-3 mt-10">
+                {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
+                  <a key={i} href="#" className="h-9 w-9 rounded-full bg-primary/8 border border-primary/10 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
+                    <Icon className="h-4 w-4" />
+                  </a>
+                ))}
+              </motion.div>
             </motion.div>
 
-            {/* Right - Learning Workspace card */}
+            {/* Right - Decorative blob with illustration */}
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="hidden lg:block"
+              className="hidden lg:flex items-center justify-center relative"
             >
-              <div className="mx-6 rounded-[1.75rem] border border-white/20 bg-slate-900/50 p-6 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] backdrop-blur-xl ring-1 ring-white/10">
-                <div className="mb-5 flex items-center justify-between">
-                  <div className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white/70">
-                    <Sparkles className="h-3 w-3 text-warning" />
-                    Learning Workspace
-                  </div>
-                  <div className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/80">
-                    Guided lessons
-                  </div>
-                </div>
-
-                <div className="space-y-4 rounded-xl border border-white/10 bg-slate-950/50 p-5">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/45">Featured Topic</p>
-                      <h3 className="mt-1.5 text-xl font-black text-white tracking-tight">Python Essentials</h3>
-                      <p className="mt-1 text-sm text-white/65 leading-snug">A calm, guided path through fundamentals, examples, and smart study support.</p>
+              {/* Large blob background */}
+              <div className="relative w-[480px] h-[480px]">
+                <div className="absolute inset-0 blob-shape bg-gradient-to-br from-pastel-accent via-pastel-shape to-pastel-shape-alt animate-float-slow" />
+                
+                {/* Inner content card */}
+                <div className="absolute inset-8 blob-shape-alt bg-gradient-to-br from-primary/10 via-primary/5 to-accent overflow-hidden flex items-center justify-center">
+                  <div className="text-center p-8">
+                    <div className="h-20 w-20 mx-auto rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4">
+                      <BookOpen className="h-10 w-10 text-primary" />
                     </div>
-                    <div className="shrink-0 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-right">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-white/45">Workspace</p>
-                      <p className="mt-0.5 text-sm font-semibold text-white">Notes + AI</p>
-                    </div>
-                  </div>
-
-                  <div className="overflow-hidden rounded-xl border border-white/10 bg-slate-900/60">
-                    <div className="h-48 bg-gradient-to-br from-slate-800 to-slate-900 p-4">
-                      <div className="h-full rounded-lg bg-slate-950/60 p-4 border border-white/5">
-                        <div className="inline-flex items-center gap-2 rounded-lg bg-white/5 border border-white/10 px-2.5 py-1.5 text-xs font-medium text-white/85">
-                          <BookOpen className="h-3.5 w-3.5" />
-                          Study smarter with guided lessons
-                        </div>
-                        <div className="mt-3 rounded-lg border border-white/5 bg-slate-900/50 p-3">
-                          <p className="text-sm font-semibold text-white/90">Soft video previews</p>
-                          <p className="mt-0.5 text-xs text-white/55">Clear explanations, all in one place. Clear walkthroughs designed to feel approachable from the very first lesson.</p>
-                          <div className="mt-3 flex flex-wrap gap-1.5">
-                            {["Concept maps", "Short recaps", "Smart prompts"].map((item) => (
-                              <span key={item} className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-[10px] font-medium text-white/70">
-                                {item}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-[1.2fr_0.8fr] gap-3">
-                    <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-white/45">Study Flow</p>
-                          <p className="mt-1.5 text-xs font-semibold text-white/90 leading-snug">Move between lessons, notes, and AI help without breaking focus.</p>
-                        </div>
-                        <span className="shrink-0 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-primary">
-                          Explore
-                        </span>
-                      </div>
-                    </div>
-                    <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-white/45">Highlights</p>
-                      <div className="mt-2 space-y-1.5">
-                        {["Easy-to-follow lessons", "Built-in study support", "Helpful practice prompts"].map((item) => (
-                          <div key={item} className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5 text-[11px] font-medium text-white/75">
-                            {item}
-                          </div>
-                        ))}
-                      </div>
+                    <h3 className="text-xl font-bold text-foreground mb-2">Start Learning</h3>
+                    <p className="text-sm text-muted-foreground mb-4">50+ courses ready for you</p>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 border border-primary/20 px-4 py-2 text-sm font-medium text-primary">
+                      <Play className="h-4 w-4 fill-primary" /> Watch Now
                     </div>
                   </div>
                 </div>
+
+                {/* Floating badge - top right */}
+                <motion.div
+                  animate={{ y: [-5, 5, -5] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute -top-2 right-4 rounded-2xl bg-card border border-border px-4 py-3 shadow-[var(--shadow-pastel)]"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-success/10 flex items-center justify-center">
+                      <Award className="h-4 w-4 text-success" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-foreground">10k+</p>
+                      <p className="text-[10px] text-muted-foreground">Learners</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Floating badge - bottom left */}
+                <motion.div
+                  animate={{ y: [5, -5, 5] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute bottom-8 -left-6 rounded-2xl bg-card border border-border px-4 py-3 shadow-[var(--shadow-pastel)]"
+                >
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-warning/10 flex items-center justify-center">
+                      <Star className="h-4 w-4 text-warning fill-warning" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-foreground">4.9/5</p>
+                      <p className="text-[10px] text-muted-foreground">Rating</p>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
             </motion.div>
           </div>
@@ -179,15 +179,15 @@ const Index = () => {
       </section>
 
       {/* Stats strip */}
-      <section className="border-b border-border bg-background">
-        <div className="container py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+      <section className="border-b border-border bg-card">
+        <div className="container py-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10">
             {stats.map((s, i) => (
               <motion.div key={s.label}
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-xl bg-primary/10 border-2 border-primary/15 flex items-center justify-center shrink-0">
+                className="flex items-center gap-4 p-4 rounded-2xl bg-background border border-border/50 shadow-sm hover:shadow-[var(--shadow-pastel)] transition-shadow duration-300">
+                <div className="h-12 w-12 rounded-xl bg-pastel border border-primary/10 flex items-center justify-center shrink-0">
                   <s.icon className="h-5 w-5 text-primary" />
                 </div>
                 <div className="min-w-0">
@@ -201,16 +201,15 @@ const Index = () => {
       </section>
 
       {/* Features */}
-      <section className="section-padding bg-muted/40 relative">
-        <div className="absolute inset-0 dot-pattern opacity-20" />
+      <section className="section-padding bg-background relative">
         <div className="container relative">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
             <motion.span variants={fadeUp} custom={0}
-              className="inline-block text-xs font-bold uppercase tracking-widest text-primary mb-4">
-              Why BrightLearn?
+              className="inline-flex items-center gap-2 rounded-full bg-pastel border border-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary mb-4">
+              <Sparkles className="h-3 w-3" /> Why BrightLearn?
             </motion.span>
             <motion.h2 variants={fadeUp} custom={1} className="text-3xl md:text-4xl font-black text-foreground mb-3">
-              Everything you need to <span className="text-gradient">learn faster</span>
+              Everything you need to <span className="text-primary">learn faster</span>
             </motion.h2>
             <motion.p variants={fadeUp} custom={2} className="text-muted-foreground max-w-md mx-auto">
               AI-powered tools designed for the modern learner.
@@ -220,9 +219,9 @@ const Index = () => {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {features.map((f, i) => (
               <motion.div key={f.title} variants={fadeUp} custom={i}
-                className="group rounded-2xl border-2 border-border bg-card p-6 shadow-sm hover:shadow-lg hover:border-primary/25 transition-all duration-300">
-                <div className={`h-12 w-12 rounded-xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-300`}>
-                  <f.icon className="h-5 w-5 text-primary-foreground" />
+                className="group rounded-2xl border border-border/80 bg-card p-6 shadow-sm hover:shadow-[var(--shadow-pastel)] hover:border-primary/20 transition-all duration-300">
+                <div className="h-14 w-14 rounded-2xl bg-pastel border border-primary/10 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform duration-300">
+                  <f.icon className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="font-bold text-foreground mb-2">{f.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
@@ -233,12 +232,12 @@ const Index = () => {
       </section>
 
       {/* Popular Courses */}
-      <section className="section-padding bg-background">
+      <section className="section-padding bg-pastel/30">
         <div className="container">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-12 gap-4">
             <div>
               <motion.span variants={fadeUp} custom={0}
-                className="inline-block text-xs font-bold uppercase tracking-widest text-primary mb-3">
+                className="inline-flex items-center gap-2 rounded-full bg-primary/5 border border-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary mb-3">
                 Popular
               </motion.span>
               <motion.h2 variants={fadeUp} custom={1} className="text-3xl md:text-4xl font-black text-foreground mb-2">
@@ -250,7 +249,7 @@ const Index = () => {
             </div>
             <motion.div variants={fadeUp} custom={3}>
               <Link to="/courses">
-                <Button variant="outline" className="rounded-xl px-5 border-2 group">
+                <Button variant="outline" className="rounded-full px-6 border-2 group hover:border-primary/30">
                   View all <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
@@ -276,12 +275,11 @@ const Index = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="section-padding bg-muted/40 relative">
-        <div className="absolute inset-0 dot-pattern opacity-20" />
+      <section className="section-padding bg-background relative">
         <div className="container relative">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
             <motion.span variants={fadeUp} custom={0}
-              className="inline-block text-xs font-bold uppercase tracking-widest text-primary mb-4">
+              className="inline-flex items-center gap-2 rounded-full bg-pastel border border-primary/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary mb-4">
               Testimonials
             </motion.span>
             <motion.h2 variants={fadeUp} custom={1} className="text-3xl md:text-4xl font-black text-foreground">
@@ -292,8 +290,8 @@ const Index = () => {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
               <motion.div key={t.name} variants={fadeUp} custom={i}
-                className="group rounded-2xl border-2 border-border bg-card p-6 shadow-sm hover:shadow-lg hover:border-primary/25 transition-all duration-300 relative">
-                <Quote className="absolute top-4 right-4 h-8 w-8 text-primary/10" />
+                className="group rounded-2xl border border-border/80 bg-card p-6 shadow-sm hover:shadow-[var(--shadow-pastel)] hover:border-primary/20 transition-all duration-300 relative">
+                <Quote className="absolute top-4 right-4 h-8 w-8 text-primary/8" />
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, j) => (
                     <Star key={j} className="h-4 w-4 fill-warning text-warning" />
@@ -301,7 +299,7 @@ const Index = () => {
                 </div>
                 <p className="text-sm text-muted-foreground mb-5 leading-relaxed">"{t.content}"</p>
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center text-sm font-bold text-primary-foreground">
+                  <div className="h-11 w-11 rounded-full bg-gradient-to-br from-primary/20 to-pastel-accent flex items-center justify-center text-sm font-bold text-primary border border-primary/10">
                     {t.avatar}
                   </div>
                   <div>
@@ -319,21 +317,24 @@ const Index = () => {
       <section className="section-padding">
         <div className="container">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-            className="relative rounded-2xl bg-gradient-to-br from-primary via-primary to-accent-foreground p-12 md:p-16 text-center overflow-hidden">
-            <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.9) 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+            className="relative rounded-3xl bg-gradient-to-br from-pastel via-pastel-accent to-pastel-shape-alt p-12 md:p-16 text-center overflow-hidden border border-primary/10">
+            {/* Decorative shapes */}
+            <div className="absolute top-8 left-8 w-20 h-20 rounded-full bg-primary/5 animate-float" />
+            <div className="absolute bottom-8 right-12 w-14 h-14 bg-primary/5 rotate-45 rounded-lg animate-float-slow" />
+            
             <div className="relative max-w-xl mx-auto">
-              <h2 className="text-2xl md:text-3xl font-black text-white mb-4">Ready to start learning?</h2>
-              <p className="text-white/80 max-w-md mx-auto mb-8">Join thousands of learners and unlock your potential with AI-powered education.</p>
+              <h2 className="text-2xl md:text-3xl font-black text-foreground mb-4">Ready to start learning?</h2>
+              <p className="text-muted-foreground max-w-md mx-auto mb-8">Join thousands of learners and unlock your potential with AI-powered education.</p>
               <div className="flex flex-wrap justify-center gap-3">
                 {!isLoggedIn && (
                   <Button size="lg" onClick={() => openModal("register")}
-                    className="rounded-xl px-8 h-12 text-base font-bold bg-white text-primary hover:bg-white/95 shadow-[0_0_20px_rgba(255,255,255,0.2)] border-0 transition-all">
+                    className="rounded-full px-8 h-12 text-base font-bold shadow-[var(--shadow-pastel)] transition-all">
                     Get Started Free
                   </Button>
                 )}
                 <Link to="/courses">
                   <Button variant="outline" size="lg"
-                    className="rounded-xl px-6 h-12 text-base font-bold text-white border-2 border-white/50 hover:bg-white hover:text-primary transition-all bg-transparent">
+                    className="rounded-full px-6 h-12 text-base font-medium border-2 border-border hover:bg-card hover:border-primary/30 transition-all">
                     Browse Courses
                   </Button>
                 </Link>

@@ -67,6 +67,12 @@ export default {
           DEFAULT: "hsl(var(--info))",
           foreground: "hsl(var(--info-foreground))",
         },
+        pastel: {
+          DEFAULT: "hsl(var(--pastel-bg))",
+          accent: "hsl(var(--pastel-accent))",
+          shape: "hsl(var(--pastel-shape))",
+          "shape-alt": "hsl(var(--pastel-shape-alt))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
