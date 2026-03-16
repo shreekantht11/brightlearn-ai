@@ -21,6 +21,7 @@ app.use(
       'http://localhost:8080',
       'http://localhost:5173',
       'https://brightlearn-ai.vercel.app',
+      /\.vercel\.app$/, // allow all vercel deployment URLs
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
