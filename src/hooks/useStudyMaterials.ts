@@ -385,133 +385,83 @@ export const useStudyMaterials = (query?: StudyMaterialSearchQuery) => {
       });
 
       if (!response.ok) {
-        // If API fails, return mock data for enrolled courses only
-        console.warn('Failed to fetch study materials, using mock enrolled data');
-        return {
-          materials: [
-            {
-              id: 1,
-              user_id: 1,
-              course_id: 1,
-              lesson_id: 1,
-              title: 'Python Fundamentals Cheat Sheet',
-              description: 'Complete reference guide for Python basics with interactive examples',
-              file_url: '/materials/python-cheatsheet.pdf',
-              file_type: 'PDF',
-              file_size: 2048576,
-              category: 'Reference',
-              is_completed: true,
-              download_count: 145,
-              upload_date: '2024-01-15',
-              created_at: '2024-01-15',
-              updated_at: '2024-01-15',
-              course_title: 'Python for Beginners',
-              lesson_title: 'Introduction to Python',
-              content: 'This comprehensive Python cheat sheet covers all fundamental concepts including variables, data types, control flow, functions, and object-oriented programming. Each section includes practical examples and best practices.',
-              contentType: 'text',
-              estimated_time: 15,
-              difficulty: 'beginner',
-              is_enrolled: true
+        // If API fails, get enrolled courses and generate materials dynamically
+        console.warn('Failed to fetch study materials, generating from enrolled courses');
+        
+        // Fetch enrolled courses to generate materials
+        try {
+          const coursesResponse = await fetch(`${API_URL}/api/enroll/my-courses`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
             },
-            {
-              id: 2,
-              user_id: 1,
-              course_id: 2,
-              lesson_id: 2,
-              title: 'JavaScript Practice Exercises',
-              description: 'Hands-on coding exercises with solutions and interactive challenges',
-              file_url: '/materials/js-exercises.zip',
-              file_type: 'ZIP',
-              file_size: 5242880,
-              category: 'Exercises',
-              is_completed: false,
-              download_count: 89,
-              upload_date: '2024-01-20',
-              created_at: '2024-01-20',
-              updated_at: '2024-01-20',
-              course_title: 'Advanced JavaScript',
-              lesson_title: 'Advanced Concepts',
-              content: 'Practice your JavaScript skills with these carefully crafted exercises. From basic syntax to advanced concepts, each exercise comes with detailed explanations and multiple solution approaches.',
-              contentType: 'code',
-              estimated_time: 25,
-              difficulty: 'intermediate',
-              is_enrolled: true
-            },
-            {
-              id: 3,
-              user_id: 1,
-              course_id: 2,
-              lesson_id: 3,
-              title: 'React Components Guide',
-              description: 'Understanding React component patterns and best practices',
-              file_url: '/materials/react-guide.pdf',
-              file_type: 'PDF',
-              file_size: 1536000,
-              category: 'Tutorial',
-              is_completed: false,
-              download_count: 67,
-              upload_date: '2024-01-22',
-              created_at: '2024-01-22',
-              updated_at: '2024-01-22',
-              course_title: 'Advanced JavaScript',
-              lesson_title: 'React Fundamentals',
-              content: 'Master React components with this comprehensive guide covering functional components, hooks, state management, and performance optimization.',
-              contentType: 'interactive',
-              estimated_time: 30,
-              difficulty: 'intermediate',
-              is_enrolled: true
-            },
-            {
-              id: 4,
-              user_id: 1,
-              course_id: 1,
-              lesson_id: 4,
-              title: 'Python Data Structures Quiz',
-              description: 'Test your knowledge of Python data structures with interactive questions',
-              file_url: '/materials/python-ds-quiz.pdf',
-              file_type: 'PDF',
-              file_size: 1024000,
-              category: 'Quiz',
-              is_completed: false,
-              download_count: 45,
-              upload_date: '2024-01-25',
-              created_at: '2024-01-25',
-              updated_at: '2024-01-25',
-              course_title: 'Python for Beginners',
-              lesson_title: 'Data Structures',
-              content: 'Challenge yourself with this comprehensive quiz covering lists, dictionaries, sets, tuples, and more advanced data structures in Python.',
-              contentType: 'quiz',
-              estimated_time: 20,
-              difficulty: 'beginner',
-              is_enrolled: true
-            },
-            {
-              id: 5,
-              user_id: 1,
-              course_id: 2,
-              lesson_id: 5,
-              title: 'JavaScript Flashcards',
-              description: 'Quick reference flashcards for JavaScript concepts and syntax',
-              file_url: '/materials/js-flashcards.pdf',
-              file_type: 'PDF',
-              file_size: 512000,
-              category: 'Reference',
-              is_completed: false,
-              download_count: 32,
-              upload_date: '2024-01-28',
-              created_at: '2024-01-28',
-              updated_at: '2024-01-28',
-              course_title: 'Advanced JavaScript',
-              lesson_title: 'Quick Reference',
-              content: 'Study JavaScript concepts effectively with these flashcards covering ES6 features, DOM manipulation, async programming, and modern JavaScript patterns.',
-              contentType: 'flashcards',
-              estimated_time: 15,
-              difficulty: 'intermediate',
-              is_enrolled: true
-            }
-          ],
-          total: 5
-        };
+          });
+          
+          let enrolledCourses: EnrolledCourse[] = [];
+          
+          if (coursesResponse.ok) {
+            enrolledCourses = await coursesResponse.json();
+          } else {
+            // Use mock enrolled courses as fallback
+            enrolledCourses = [
+              {
+                id: 1,
+                title: 'Python for Beginners',
+                description: 'Learn Python programming from scratch',
+                instructor: 'John Doe',
+                enrolled_date: new Date().toISOString(),
+                progress: 45
+              },
+              {
+                id: 2,
+                title: 'Advanced JavaScript',
+                description: 'Master advanced JavaScript concepts',
+                instructor: 'Jane Smith',
+                enrolled_date: new Date().toISOString(),
+                progress: 30
+              }
+            ];
+          }
+          
+          // Generate materials based on enrolled courses
+          const materials = generateMaterialsForCourses(enrolledCourses);
+          
+          // Apply filters
+          let filteredMaterials = materials;
+          
+          if (query?.course_id) {
+            filteredMaterials = filteredMaterials.filter(m => m.course_id === query.course_id);
+          }
+          
+          if (query?.category) {
+            filteredMaterials = filteredMaterials.filter(m => m.category === query.category);
+          }
+          
+          if (query?.is_completed !== undefined) {
+            filteredMaterials = filteredMaterials.filter(m => m.is_completed === query.is_completed);
+          }
+          
+          if (query?.q) {
+            const searchLower = query.q.toLowerCase();
+            filteredMaterials = filteredMaterials.filter(m => 
+              m.title.toLowerCase().includes(searchLower) ||
+              m.description.toLowerCase().includes(searchLower) ||
+              m.course_title.toLowerCase().includes(searchLower)
+            );
+          }
+          
+          return {
+            materials: filteredMaterials,
+            total: filteredMaterials.length
+          };
+          
+        } catch (error) {
+          console.error('Failed to generate materials:', error);
+          return {
+            materials: [],
+            total: 0
+          };
+        }
       }
 
       return response.json();
@@ -571,6 +521,55 @@ export const useEnrolledCourses = () => {
     retry: 1, // Only retry once
     retryDelay: 1000, // Wait 1 second before retry
   });
+};
+
+// Generate study materials based on enrolled courses
+const generateMaterialsForCourses = (courses: EnrolledCourse[]): StudyMaterial[] => {
+  const materials: StudyMaterial[] = [];
+  let materialId = 1;
+
+  courses.forEach(course => {
+    // Generate 2-3 materials per course
+    const materialCount = Math.floor(Math.random() * 2) + 2; // 2-3 materials
+    
+    for (let i = 0; i < materialCount; i++) {
+      const materialTypes = [
+        { type: 'text', title: 'Complete Guide', category: 'Reference', time: 15 },
+        { type: 'quiz', title: 'Knowledge Test', category: 'Quiz', time: 20 },
+        { type: 'interactive', title: 'Interactive Tutorial', category: 'Tutorial', time: 30 },
+        { type: 'flashcards', title: 'Quick Reference', category: 'Reference', time: 15 }
+      ];
+      
+      const materialType = materialTypes[i % materialTypes.length];
+      
+      materials.push({
+        id: materialId++,
+        user_id: 1,
+        course_id: course.id,
+        lesson_id: materialId,
+        title: `${course.title}: ${materialType.title}`,
+        description: `Comprehensive ${materialType.title.toLowerCase()} for ${course.title}`,
+        file_url: `/materials/${course.title.toLowerCase().replace(/\s+/g, '-')}-${materialType.type}.pdf`,
+        file_type: 'PDF',
+        file_size: Math.floor(Math.random() * 3000000) + 500000, // 0.5MB - 3.5MB
+        category: materialType.category,
+        is_completed: false, // No completion tracking
+        download_count: Math.floor(Math.random() * 200) + 10,
+        upload_date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        course_title: course.title,
+        lesson_title: `Lesson ${i + 1}`,
+        content: `This comprehensive ${materialType.title.toLowerCase()} covers all essential concepts for ${course.title}.`,
+        contentType: materialType.type as any,
+        estimated_time: materialType.time,
+        difficulty: course.id === 1 ? 'beginner' : 'intermediate',
+        is_enrolled: true
+      });
+    }
+  });
+
+  return materials;
 };
 
 // Create study material

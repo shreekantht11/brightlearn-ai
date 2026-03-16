@@ -5,15 +5,12 @@ import {
   Download, 
   BookOpen, 
   Clock, 
-  CheckCircle2, 
-  Filter, 
   Search,
   Folder,
   Calendar,
   User,
   Loader2,
-  Eye,
-  Lock
+  Eye
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,7 +22,6 @@ import {
   useStudyMaterials,
   useEnrolledCourses,
   useStudyMaterialCategories,
-  useUpdateStudyMaterial,
   useDownloadStudyMaterial
 } from '@/hooks/useStudyMaterials';
 import type { StudyMaterial, EnrolledCourse } from '@/hooks/useStudyMaterials';
@@ -52,8 +48,12 @@ const StudyMaterials = () => {
   const materials = materialsData?.materials || [];
   const enrolledCoursesList = enrolledCourses || [];
   
+  // Calculate live dashboard stats
+  const enrolledCoursesCount = enrolledCoursesList.length;
+  const totalMaterialsCount = materials.length;
+  const totalEstimatedTime = materials.reduce((acc, m) => acc + (m.estimated_time || 0), 0);
+  
   // Mutations
-  const updateMaterialMutation = useUpdateStudyMaterial();
   const downloadMutation = useDownloadStudyMaterial();
 
   // Handle view button click - only enrolled materials are shown
@@ -63,20 +63,10 @@ const StudyMaterials = () => {
     setIsViewerOpen(true);
   };
 
-  // Handle mark complete
-  const handleMarkComplete = (materialId: number) => {
-    updateMaterialMutation.mutate({
-      materialId,
-      updateData: { is_completed: true }
-    });
-  };
-
   // Handle view complete
   const handleViewComplete = (materialId: number) => {
-    updateMaterialMutation.mutate({
-      materialId,
-      updateData: { is_completed: true }
-    });
+    // No completion tracking needed
+    console.log('Material viewed:', materialId);
   };
 
   // Handle download
@@ -243,7 +233,7 @@ const StudyMaterials = () => {
         </motion.div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -255,7 +245,7 @@ const StudyMaterials = () => {
                 <BookOpen className="h-7 w-7 text-white" />
               </div>
               <div>
-                <p className="text-3xl font-black text-blue-900 dark:text-blue-100">{enrolledCoursesList.length}</p>
+                <p className="text-3xl font-black text-blue-900 dark:text-blue-100">{enrolledCoursesCount}</p>
                 <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">Enrolled Courses</p>
               </div>
             </div>
@@ -272,7 +262,7 @@ const StudyMaterials = () => {
                 <FileText className="h-7 w-7 text-white" />
               </div>
               <div>
-                <p className="text-3xl font-black text-purple-900 dark:text-purple-100">{materials.length}</p>
+                <p className="text-3xl font-black text-purple-900 dark:text-purple-100">{totalMaterialsCount}</p>
                 <p className="text-sm text-purple-700 dark:text-purple-300 font-medium">Total Materials</p>
               </div>
             </div>
@@ -282,25 +272,6 @@ const StudyMaterials = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
-            className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-0 rounded-2xl p-6 shadow-lg"
-          >
-            <div className="flex items-center gap-4">
-              <div className="h-14 w-14 rounded-xl bg-green-500 flex items-center justify-center">
-                <CheckCircle2 className="h-7 w-7 text-white" />
-              </div>
-              <div>
-                <p className="text-3xl font-black text-green-900 dark:text-green-100">
-                  {materials.filter(m => m.is_completed).length}
-                </p>
-                <p className="text-sm text-green-700 dark:text-green-300 font-medium">Completed</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 }}
             className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 border-0 rounded-2xl p-6 shadow-lg"
           >
             <div className="flex items-center gap-4">
@@ -309,7 +280,7 @@ const StudyMaterials = () => {
               </div>
               <div>
                 <p className="text-3xl font-black text-orange-900 dark:text-orange-100">
-                  {materials.reduce((acc, m) => acc + (m.estimated_time || 0), 0)}
+                  {totalEstimatedTime}
                 </p>
                 <p className="text-sm text-orange-700 dark:text-orange-300 font-medium">Min Est. Time</p>
               </div>
@@ -413,15 +384,6 @@ const StudyMaterials = () => {
                             {material.description}
                           </p>
                         </div>
-                        
-                        <div className="flex flex-col gap-2">
-                          {material.is_completed && (
-                            <div className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-xs font-medium">
-                              <CheckCircle2 className="h-3 w-3 inline mr-1" />
-                              Completed
-                            </div>
-                          )}
-                        </div>
                       </div>
 
                       {/* Metadata */}
@@ -478,14 +440,6 @@ const StudyMaterials = () => {
                               <Download className="h-4 w-4" />
                             </>
                           )}
-                        </Button>
-                        
-                        <Button
-                          variant="outline"
-                          onClick={() => handleMarkComplete(material.id)}
-                          className="rounded-xl border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
-                        >
-                          {material.is_completed ? 'Undo' : 'Done'}
                         </Button>
                       </div>
                     </div>
