@@ -8,12 +8,16 @@ import {
   deleteStudyMaterial,
   downloadStudyMaterial,
   getMaterialsByCourse,
-  getCategories
+  getCategories,
+  migrateStudyMaterials
 } from './study-materials.controller';
 
 const router = Router();
 
-// All routes require authentication
+// Migration endpoint (no auth required for setup)
+router.post('/migrate', migrateStudyMaterials);
+
+// All other routes require authentication
 router.get('/', requireAuth, getUserStudyMaterials);
 router.post('/', requireAuth, createStudyMaterial);
 router.get('/categories', requireAuth, getCategories);
