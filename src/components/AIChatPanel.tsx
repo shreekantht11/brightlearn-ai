@@ -269,8 +269,8 @@ const AIChatPanel = () => {
 
   /* ─── dimensions ─── */
   const panelClass = expanded
-    ? "fixed inset-4 sm:inset-8 z-50 flex flex-col overflow-hidden rounded-3xl"
-    : "fixed bottom-24 right-6 z-50 flex h-[560px] w-[25rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-3xl";
+    ? "fixed inset-4 sm:inset-8 z-[100] flex flex-col overflow-hidden rounded-3xl"
+    : "fixed bottom-24 right-6 z-[100] flex h-[560px] w-[25rem] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-3xl";
 
   const lastAiIdx = (() => {
     for (let i = messages.length - 1; i >= 0; i--) if (messages[i].role === "ai") return i;
@@ -483,7 +483,7 @@ const AIChatPanel = () => {
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
         onClick={handleOpen}
-        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-cyan-500 text-primary-foreground shadow-lg shadow-primary/25 transition-shadow hover:shadow-xl"
+        className="fixed bottom-6 right-6 z-[100] flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-cyan-500 text-primary-foreground shadow-lg shadow-primary/25 transition-shadow hover:shadow-xl"
         aria-label="Open AI assistant"
       >
         {/* pulse ring — only before first open */}

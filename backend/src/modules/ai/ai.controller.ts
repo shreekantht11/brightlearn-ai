@@ -30,7 +30,7 @@ const completeWithHuggingFace = async (systemPrompt: string, userPrompt: string)
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt }
     ],
-    max_tokens: 400,
+    max_tokens: 1500,
     temperature: 0.4
   });
 
@@ -55,10 +55,13 @@ You help users with:
 - solving confusion about enrollments, learning flow, and practice
 
 Rules:
-- answer clearly, warmly, and concisely
-- if the question is about the current page or lesson, use the provided context
-- if the user seems confused, suggest the next practical step in the app
-- do not invent unavailable account-specific data`;
+- ALWAYS provide structured answers (use short bullet points or numbered lists).
+- Keep answers very short, concise, and highly informative. Do not write long paragraphs.
+- Answer clearly and warmly.
+- If the question is about the current page or lesson, use the provided context.
+- If the user seems confused, suggest the next practical step in the app.
+- Do not invent unavailable account-specific data.
+- NEVER output your internal reasoning or <think> tags.`;
 
     const userPrompt = `Context:
 ${route}
@@ -69,7 +72,19 @@ ${lessonTitle}
 User question:
 ${message}`;
 
-    const aiMessage = await completeWithHuggingFace(systemPrompt, userPrompt);
+    let aiMessage = await completeWithHuggingFace(systemPrompt, userPrompt);
+    
+    // Remove completed think tags
+    aiMessage = aiMessage.replace(/<think>[\s\S]*?<\/think>\s*/gi, '');
+    // Remove if cut off (unclosed think tag)
+    aiMessage = aiMessage.replace(/<think>[\s\S]*$/gi, '');
+    // Trim
+    aiMessage = aiMessage.trim();
+    
+    if (!aiMessage) {
+      aiMessage = "I am thinking... please ask your question again, or try a simpler question!";
+    }
+
     res.json({ reply: aiMessage });
   } catch (error) {
     console.error('AI Error:', getErrorMessage(error));
