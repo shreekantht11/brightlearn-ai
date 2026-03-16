@@ -36,7 +36,7 @@ const StudyMaterials = () => {
 
   const token = localStorage.getItem('token');
 
-  // Fetch enrolled courses and study materials (enrolled only)
+  // Fetch all study materials and enrolled courses
   const { data: materialsData, isLoading: materialsLoading } = useStudyMaterials({
     q: searchQuery,
     course_id: selectedCourse || undefined,
@@ -47,11 +47,6 @@ const StudyMaterials = () => {
   
   const materials = materialsData?.materials || [];
   const enrolledCoursesList = enrolledCourses || [];
-  
-  // Calculate live dashboard stats
-  const enrolledCoursesCount = enrolledCoursesList.length;
-  const totalMaterialsCount = materials.length;
-  const totalEstimatedTime = materials.reduce((acc, m) => acc + (m.estimated_time || 0), 0);
   
   // Mutations
   const downloadMutation = useDownloadStudyMaterial();
@@ -220,79 +215,17 @@ const StudyMaterials = () => {
             <div>
               <h1 className="text-4xl font-black text-foreground mb-2">Study Materials</h1>
               <p className="text-lg text-muted-foreground">
-                Access learning resources from your enrolled courses
+                Access all available learning resources
               </p>
-            </div>
-            <div className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span>Enrolled</span>
-              </div>
             </div>
           </div>
         </motion.div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.1 }}
-            className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-0 rounded-2xl p-6 shadow-lg"
-          >
-            <div className="flex items-center gap-4">
-              <div className="h-14 w-14 rounded-xl bg-blue-500 flex items-center justify-center">
-                <BookOpen className="h-7 w-7 text-white" />
-              </div>
-              <div>
-                <p className="text-3xl font-black text-blue-900 dark:text-blue-100">{enrolledCoursesCount}</p>
-                <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">Enrolled Courses</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-0 rounded-2xl p-6 shadow-lg"
-          >
-            <div className="flex items-center gap-4">
-              <div className="h-14 w-14 rounded-xl bg-purple-500 flex items-center justify-center">
-                <FileText className="h-7 w-7 text-white" />
-              </div>
-              <div>
-                <p className="text-3xl font-black text-purple-900 dark:text-purple-100">{totalMaterialsCount}</p>
-                <p className="text-sm text-purple-700 dark:text-purple-300 font-medium">Total Materials</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
-            className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900 border-0 rounded-2xl p-6 shadow-lg"
-          >
-            <div className="flex items-center gap-4">
-              <div className="h-14 w-14 rounded-xl bg-orange-500 flex items-center justify-center">
-                <Clock className="h-7 w-7 text-white" />
-              </div>
-              <div>
-                <p className="text-3xl font-black text-orange-900 dark:text-orange-100">
-                  {totalEstimatedTime}
-                </p>
-                <p className="text-sm text-orange-700 dark:text-orange-300 font-medium">Min Est. Time</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
 
         {/* Filters */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.3 }}
           className="mb-8"
         >
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
