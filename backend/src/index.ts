@@ -56,7 +56,7 @@ const startServer = async () => {
       `Database connected: ${env.DB_HOST}:${env.DB_PORT}/${env.DB_NAME} (ssl=${env.DB_SSL ? 'on' : 'off'})`
     );
 
-    app.listen(env.PORT, () => {
+    app.listen(Number(env.PORT), '0.0.0.0', () => {
       console.log(`Server is running on port ${env.PORT}`);
     });
   } catch (error) {
