@@ -12,6 +12,8 @@ import progressRoutes from './modules/progress/progress.routes';
 import aiRoutes from './modules/ai/ai.routes';
 import practiceRoutes from './modules/practice/practice.routes';
 import enrollmentRoutes from './modules/enrollment/enrollment.routes';
+import notesRoutes from './modules/notes/notes.routes';
+import studyMaterialsRoutes from './modules/study-materials/study-materials.routes';
 
 const app = express();
 
@@ -43,6 +45,8 @@ app.use('/api/progress', progressRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/practice', practiceRoutes);
 app.use('/api/enroll', enrollmentRoutes);
+app.use('/api/notes', notesRoutes);
+app.use('/api/study-materials', studyMaterialsRoutes);
 
 // Error Middleware
 app.use(errorMiddleware);
