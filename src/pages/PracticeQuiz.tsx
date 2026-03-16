@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, ArrowLeft, CheckCircle2, XCircle, AlertCircle, Award } from "lucide-react";
+import { Loader2, CheckCircle2, XCircle, AlertCircle, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { API_URL } from "@/lib/api-config";
@@ -97,7 +97,7 @@ export default function PracticeQuiz() {
       <AlertCircle className="h-16 w-16 text-muted-foreground mb-4" />
       <h2 className="text-2xl font-bold mb-2">No Questions Found</h2>
       <p className="text-muted-foreground mb-6">This test doesn't have any questions configured.</p>
-      <Button onClick={() => navigate("/practice")}>Go Back</Button>
+      <Button onClick={() => navigate("/practice")}>View Practice Hub</Button>
     </div>
   );
 
@@ -109,9 +109,9 @@ export default function PracticeQuiz() {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col">
         <header className="h-16 bg-white border-b border-slate-200 flex items-center px-4 md:px-8">
-          <button onClick={() => navigate("/practice")} className="flex items-center text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Practice Hub
-          </button>
+          <div className="flex items-center text-sm font-semibold text-slate-900">
+            Test Results
+          </div>
         </header>
         <div className="flex-1 py-12 px-4 container max-w-3xl">
           <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white rounded-3xl p-8 shadow-xl shadow-black/5 text-center mb-8 border border-slate-100">

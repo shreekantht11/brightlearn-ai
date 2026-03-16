@@ -11,11 +11,11 @@ import Learning from "./pages/Learning";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import BackButton from "./components/BackButton";
 import AuthModal from "./components/AuthModal";
 import AIChatPanel from "./components/AIChatPanel";
 import Practice from "./pages/Practice";
 import PracticeQuiz from "./pages/PracticeQuiz";
+import StudyMaterials from "./pages/StudyMaterials";
 import { AuthModalProvider } from "./context/AuthModalContext";
 import { EnrollModalProvider } from "./context/EnrollModalContext";
 
@@ -30,7 +30,6 @@ const App = () => (
         <AuthModalProvider>
           <EnrollModalProvider>
             <AuthModal />
-            <BackButton />
             <AIChatPanel />
             <Routes>
               <Route path="/" element={<Index />} />
@@ -40,6 +39,7 @@ const App = () => (
               <Route path="/courses" element={<Courses />} />
               <Route path="/course/:id" element={<CourseDetail />} />
               <Route path="/learn/:id" element={<Learning />} />
+              <Route path="/study-materials" element={<StudyMaterials />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/practice" element={<Practice />} />
               <Route path="/practice/test/:testId" element={<PracticeQuiz />} />

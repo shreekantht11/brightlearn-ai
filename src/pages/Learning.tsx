@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ArrowLeft,
   ChevronLeft,
   ChevronRight,
   CheckCircle2,
@@ -15,12 +14,16 @@ import {
   Play,
   Sparkles,
   X,
+  FileText,
+  StickyNote,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import VideoPlayer from "@/components/VideoPlayer";
 import { courses as mockCourses } from "@/lib/data";
 import { toast } from "sonner";
 import { API_URL } from "@/lib/api-config";
+import QuickNoteModal from "@/components/notes/QuickNoteModal";
+import NotesWorkspace from "@/components/notes/NotesWorkspace";
 
 const DEMO_VIDEO_ID = "dQw4w9WgXcQ";
 
@@ -70,6 +73,8 @@ const Learning = () => {
   const [completedVideoIds, setCompletedVideoIds] = useState<Array<number | string>>([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [showQuickNote, setShowQuickNote] = useState(false);
+  const [showNotesWorkspace, setShowNotesWorkspace] = useState(false);
   const saveProgressTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const token = localStorage.getItem("token");
@@ -262,33 +267,11 @@ const Learning = () => {
           {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
 
-        <Link
-          to={`/course/${id}`}
-          className="hidden items-center gap-2 rounded-full border border-border bg-background px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/20 hover:bg-accent hover:text-foreground sm:inline-flex"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Course
-        </Link>
-
         <div className="hidden min-w-0 items-center gap-2 text-sm sm:flex">
-          <Link to="/courses" className="flex items-center gap-1 text-muted-foreground transition-colors hover:text-foreground">
-            <Home className="h-3.5 w-3.5" /> Courses
-          </Link>
-          <span className="text-muted-foreground">/</span>
-          <Link to={`/course/${id}`} className="max-w-[150px] truncate text-muted-foreground transition-colors hover:text-foreground">
-            {courseTitle}
-          </Link>
+          <span className="text-muted-foreground">Lesson {currentIndex + 1} of {allVideos.length}</span>
           <span className="text-muted-foreground">/</span>
           <span className="max-w-[200px] truncate font-semibold text-foreground">{currentVideo?.title || "Course content"}</span>
         </div>
-
-        <Link
-          to={`/course/${id}`}
-          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors hover:border-primary/20 hover:bg-accent hover:text-foreground sm:hidden"
-          aria-label="Back to course"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
 
         <div className="min-w-0 sm:hidden">
           <p className="truncate text-sm font-semibold text-foreground">{courseTitle}</p>
@@ -333,6 +316,22 @@ const Learning = () => {
                   <p className="mt-3 text-sm text-muted-foreground">
                     {completedVideoIds.length} of {allVideos.length} lessons complete
                   </p>
+                </div>
+
+                {/* Notes Section */}
+                <div className="rounded-[1.5rem] border border-border bg-muted/30 p-4">
+                  <button
+                    onClick={() => setShowNotesWorkspace(true)}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-colors group"
+                  >
+                    <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <StickyNote className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-foreground">Notes</p>
+                      <p className="text-xs text-muted-foreground">Take & organize notes</p>
+                    </div>
+                  </button>
                 </div>
 
                 {tree.map((section) => {
@@ -496,14 +495,14 @@ const Learning = () => {
                   Once curriculum is added, this page will automatically become the full learning player for the course.
                 </p>
                 <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                  <Link to={`/course/${id}`}>
+                  <Link to="/courses">
                     <Button variant="outline" className="rounded-xl">
-                      Back to Course
+                      Browse Courses
                     </Button>
                   </Link>
-                  <Link to="/courses">
+                  <Link to="/study-materials">
                     <Button className="rounded-xl">
-                      Browse Other Courses
+                      Study Materials
                     </Button>
                   </Link>
                 </div>
@@ -512,6 +511,53 @@ const Learning = () => {
           </div>
         </main>
       </div>
+
+      {/* Floating Quick Note Button */}
+      {currentVideo && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowQuickNote(true)}
+          className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-shadow"
+        >
+          <StickyNote className="h-4 w-4" />
+          <span className="text-sm font-medium">Take Note</span>
+        </motion.button>
+      )}
+
+      {/* Quick Note Modal */}
+      <QuickNoteModal
+        isOpen={showQuickNote}
+        onClose={() => setShowQuickNote(false)}
+        courseId={isLiveId ? parseInt(id || '1') : 1}
+        lessonId={currentVideo?.id as number}
+        lessonTitle={currentVideo?.title}
+        courseTitle={courseTitle}
+      />
+
+      {/* Notes Workspace Modal */}
+      {showNotesWorkspace && (
+        <div className="fixed inset-0 z-50 bg-background">
+          <div className="relative h-full">
+            {/* Close button */}
+            <button
+              onClick={() => setShowNotesWorkspace(false)}
+              className="absolute top-4 right-4 z-10 p-2 rounded-xl bg-card border border-border hover:bg-muted transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            {/* Notes Workspace */}
+            <NotesWorkspace
+              courseId={isLiveId ? parseInt(id || '1') : 1}
+              lessonId={currentVideo?.id as number}
+              className="h-full"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

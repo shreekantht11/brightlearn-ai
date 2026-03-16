@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Menu, X, User } from "lucide-react";
+import { BookOpen, Menu, X, User, FileText } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuthModal } from "@/context/AuthModalContext";
@@ -35,10 +35,11 @@ const Navbar = () => {
   const userName = authState.userName;
 
   const links = [
-    { to: "/", label: "Home" },
-    { to: "/courses", label: "Courses" },
-    { to: "/practice", label: "Practice" },
-    ...(isLoggedIn ? [{ to: "/profile", label: "Profile" }] : []),
+    { to: "/", label: "Home", icon: BookOpen },
+    { to: "/courses", label: "Courses", icon: BookOpen },
+    { to: "/practice", label: "Practice", icon: BookOpen },
+    { to: "/study-materials", label: "Study Materials", icon: FileText },
+    ...(isLoggedIn ? [{ to: "/profile", label: "Profile", icon: User }] : []),
   ];
 
   return (
@@ -57,9 +58,10 @@ const Navbar = () => {
             const isActive = location.pathname === l.to;
             return (
               <Link key={l.to} to={l.to}
-                className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2 ${
                   isActive ? "text-primary" : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 }`}>
+                {l.icon && <l.icon className="h-4 w-4" />}
                 {l.label}
                 {isActive && (
                   <motion.div layoutId="nav-indicator"
@@ -99,7 +101,8 @@ const Navbar = () => {
           className="md:hidden border-t border-border bg-background p-4 space-y-2">
           {links.map((l) => (
             <Link key={l.to} to={l.to} onClick={() => setMobileOpen(false)}
-              className="block px-4 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-muted">
+              className="block px-4 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-muted flex items-center gap-2">
+              {l.icon && <l.icon className="h-4 w-4" />}
               {l.label}
             </Link>
           ))}
