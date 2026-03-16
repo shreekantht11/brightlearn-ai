@@ -72,12 +72,9 @@ const Index = () => {
 
               <motion.h1 variants={fadeUp} custom={1}
                 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-light text-foreground mb-4 leading-[1.1] tracking-tight">
-                Let's{" "}
-                <span className="font-black text-primary">E-learning</span>
-                <br />
-                at your{" "}
-                <span className="font-black text-foreground relative inline-block">
-                  home
+                Bright{" "}
+                <span className="font-black text-primary relative inline-block">
+                  Learn
                   <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 120 8" fill="none">
                     <path d="M2 6C20 2 40 2 60 4C80 6 100 3 118 2" stroke="hsl(var(--primary))" strokeWidth="3" strokeLinecap="round" opacity="0.4" />
                   </svg>
@@ -91,15 +88,21 @@ const Index = () => {
 
               <motion.div variants={fadeUp} custom={3} className="flex flex-wrap items-center gap-4">
                 {!isLoggedIn && (
-                  <Button size="lg" onClick={() => openModal("register")}
-                    className="rounded-full px-8 h-12 text-base font-bold shadow-[var(--shadow-pastel)] hover:shadow-lg transition-all duration-300">
-                    Apply now
-                  </Button>
+                  <>
+                    <Button size="lg" onClick={() => openModal("register")}
+                      className="rounded-full px-8 h-12 text-base font-bold shadow-[var(--shadow-pastel)] hover:shadow-lg transition-all duration-300">
+                      Apply now
+                    </Button>
+                    <Button variant="outline" size="lg" onClick={() => openModal("login")}
+                      className="rounded-full px-8 h-12 text-base font-medium border-2 border-border hover:bg-accent hover:border-primary/30 transition-all duration-300">
+                      Log in
+                    </Button>
+                  </>
                 )}
                 <Link to="/courses">
                   <Button variant="outline" size="lg"
                     className="rounded-full px-8 h-12 text-base font-medium border-2 border-border hover:bg-accent hover:border-primary/30 transition-all duration-300">
-                    Read More <ArrowRight className="ml-2 h-4 w-4" />
+                    Browse Courses <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
               </motion.div>
